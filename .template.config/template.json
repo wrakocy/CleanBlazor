@@ -3,7 +3,7 @@
   "author": "William Rakocy",
   "classifications": [
     "Web",
-    "ASP.NET",
+    "ASP.NET Core",
     "Blazor",
     "Clean Architecture"
   ],
@@ -12,8 +12,8 @@
     "type": "project"
   },
   "identity": "Wrak.CleanArchitecture.Template",
-  "name": "ASP.NET with Blazor Clean Architecture Solution",
-  "shortName": "clean-blazor",
+  "name": "ASP.NET Core with Blazor and Clean Architecture",
+  "shortName": "blazor-clean",
   "sourceName": "Wrak.CleanArchitecture",
   "templateFileExtensions": [ ".cs", ".csproj", ".slnx" ],
   "preferNameDirectory": true,
