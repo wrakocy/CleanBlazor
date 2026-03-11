@@ -17,6 +17,7 @@
   "sourceName": "Wrak.CleanArchitecture",
   "templateFileExtensions": [ ".cs", ".csproj", ".slnx" ],
   "preferNameDirectory": true,
+  "icon": "icon.png",
   "sources": [
     {
       "include": [
