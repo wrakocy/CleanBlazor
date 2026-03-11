@@ -1,0 +1,31 @@
+﻿@typeparam TModel where TModel : class
+
+<MudForm @ref="@_form"
+         Model="@Model"
+         Style="@Style"
+         Class="@Class"
+         FieldChanged="@(_ => _form.Validate())"
+         Validation="@(_validator.ValidateModel)"
+         SuppressImplicitSubmission="@SuppressImplicitSubmission"
+         IsValidChanged="@(StateHasChanged)">
+    <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+        <CascadingValue Value="_form" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+
+        <JustifiedFlexGroup Align="Align.End" Class="mt-10">
+            <MudButton StartIcon="@AppConstants.Icons.Cancel"
+                        OnClick="@(async () => await Cancel())"
+                        Style="min-width: 150px;"
+                        Variant="Variant.Outlined"
+                        Color="Color.Secondary">@CancelText</MudButton>
+
+            <MudButton StartIcon="@SubmitIcon"
+                        OnClick="@(async () => await Submit())"
+                        Style="min-width: 150px;"
+                        Variant="@SubmitVariant"
+                        Color="Color.Primary"
+                        Disabled="@(!_form.IsValid || SubmitDisabled)">@SubmitText</MudButton>
+        </JustifiedFlexGroup>
+    </MudFocusTrap>
+</MudForm>

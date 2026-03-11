@@ -1,0 +1,18 @@
+﻿@inherits MaskedStringFieldBase
+
+<MudTextField T="string"
+              Label="@Label"
+              Value="@Value"
+              For="@For"
+              HelperText="@HelperText"
+              Placeholder="@Placeholder"
+              Adornment="@Adornment"
+              AdornmentIcon="@AdornmentIcon"
+              IconSize="@IconSize"
+              Immediate="@true"
+              ShrinkLabel="@true"
+              Clearable="@Clearable"
+              OnClearButtonClick="OnValueCleared"
+              DebounceInterval="100"
+              Disabled="@Disabled"
+              UserAttributes="@_userAttributes" />

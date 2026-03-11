@@ -1,0 +1,32 @@
+﻿@inherits IndexBase
+@page "/"
+
+<PageTitle>Welcome</PageTitle>
+
+<Alert Severity="Severity.Warning"
+       Class="mb-7"
+       ContentAlignment="HorizontalAlignment.Center"
+       ShowCloseIcon="true"
+       Visible="Reloaded ?? false">
+    <strong>Heads up! </strong> The application has been reloaded.
+    Please restart any unsaved work you had open in this tab.
+</Alert>
+
+<ProgressOverlay Display="@_appState.Working" />
+<PageHeader>Welcome @_userContext.FirstName</PageHeader>
+
+<MudDivider Class="mt-3 mb-8" />
+<MudStack Class="d-flex flex-sm-row mb-8 ps-0 ps-sm-5" 
+          AlignItems="AlignItems.Stretch" 
+          Justify="Justify.FlexStart" 
+          Spacing="6"
+          Wrap="Wrap.Wrap">
+
+    <IndexCard Title="First Feature"
+               HeaderIcon="@AppConstants.Icons.Help"
+               Url="/">
+        TODO...
+    </IndexCard>
+
+</MudStack>
+

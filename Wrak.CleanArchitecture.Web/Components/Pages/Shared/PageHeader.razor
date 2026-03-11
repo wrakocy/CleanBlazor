@@ -1,0 +1,11 @@
+﻿@if (BreadcrumbItems != null)
+{
+    <!-- Breadcrumbs provided. Add smaller margins to header. -->
+    <MudText Typo="Typo.h2" Color="@Color" GutterBottom="false" Class="ms-1 mb-2">@ChildContent</MudText>
+    <MudBreadcrumbs Class="pt-0 mt-0 mb-1" Items="@BreadcrumbItems" />
+}
+else
+{
+    <!-- No breadcrumbs provided. Add larger margins to header. -->
+    <MudText Typo="Typo.h2" Color="@Color" GutterBottom="false" Class="ms-1 mb-4">@ChildContent</MudText>
+}

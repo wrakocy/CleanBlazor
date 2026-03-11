@@ -1,0 +1,26 @@
+﻿@typeparam TEnum where TEnum : struct, Enum
+
+<MudSelect T="TEnum"
+           Label="@Label"
+           Value="@Value"
+           ValueChanged="@OnValueChanged"
+           For="@For"
+           Disabled="@Disabled"
+           Immediate="@false"
+           ShrinkLabel="@true">
+    @foreach (var enumValue in Enum.GetValues<TEnum>())
+    {
+        <MudSelectItem Class="@(ItemClassFunc?.Invoke(enumValue) ?? string.Empty)"
+                       Style="@(ItemStyleFunc?.Invoke(enumValue) ?? string.Empty)"
+                       Value="@enumValue">
+            @if (ItemTemplate != null)
+            {
+                @ItemTemplate(enumValue)
+            }
+            else
+            {
+                @enumValue.ToDisplayName(UseShortNames)
+            }
+        </MudSelectItem>
+    }
+</MudSelect>

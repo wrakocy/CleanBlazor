@@ -1,0 +1,16 @@
+﻿@typeparam TModel where TModel : class
+
+<Dialog>
+    <ValidatedForm Model="@Model" 
+                   Style="@Style"
+                   Class="@Class"
+                   SubmitText="@SubmitText"
+                   CancelText="@CancelText"
+                   SubmitIcon="@SubmitIcon"
+                   SubmitVariant="@SubmitVariant"
+                   Submitted="Submit" 
+                   Cancelled="Cancel"
+                   SubmitDisabled="@SubmitDisabled">
+        @ChildContent
+    </ValidatedForm>
+</Dialog>

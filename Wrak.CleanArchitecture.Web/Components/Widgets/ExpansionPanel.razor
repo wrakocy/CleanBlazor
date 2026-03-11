@@ -1,0 +1,17 @@
+﻿@inherits ExpansionPanelBase
+
+<MudExpansionPanel Dense="true"
+                   Gutters="true"
+                   Expanded="@Expanded"
+                   ExpandedChanged="ExpandedChanged"
+                   Class="mb-3">
+    <TitleContent>
+        <div class="d-flex">
+            <MudIcon Icon="@Icon" class="mr-3"></MudIcon>
+            <MudText Typo="Typo.h6">@Title</MudText>
+        </div>
+    </TitleContent>
+    <ChildContent>
+        @ChildContent
+    </ChildContent>
+</MudExpansionPanel>

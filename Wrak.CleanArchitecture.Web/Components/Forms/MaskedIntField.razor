@@ -1,0 +1,35 @@
+﻿@inherits MaskedIntFieldBase
+
+@* HACK:-ish: do not forward the Validation parameter to the text field
+              unless it is not null. Doing so tells effectively tells the input that to
+              ignore validation.
+*@
+@if (Validation != null)
+{
+    <MudTextField T="int?"
+                  Label="@Label"
+                  Value="@Value"
+                  For="@For"
+                  HelperText="@HelperText"
+                  Placeholder="@Placeholder"
+                  Immediate="@true"
+                  ShrinkLabel="@true"
+                  DebounceInterval="100"
+                  Disabled="@Disabled"
+                  UserAttributes="@_userAttributes" 
+                  Validation="@Validation" />
+}
+else
+{
+    <MudTextField T="int?"
+                  Label="@Label"
+                  Value="@Value"
+                  For="@For"
+                  HelperText="@HelperText"
+                  Placeholder="@Placeholder"
+                  Immediate="@true"
+                  ShrinkLabel="@true"
+                  DebounceInterval="100"
+                  Disabled="@Disabled"
+                  UserAttributes="@_userAttributes" />
+}

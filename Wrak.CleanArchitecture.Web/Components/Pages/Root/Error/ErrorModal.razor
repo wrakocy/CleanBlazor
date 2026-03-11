@@ -1,0 +1,49 @@
+﻿@inherits ErrorModalBase
+@using System.Net
+
+<Dialog>
+    <MudContainer Class="pa-0 ma-0">
+        <MudPaper Elevation="0"
+                  Class="d-flex flex-column align-center text-center ma-0">
+            <MudIcon Icon="@_icon" Style="font-size:4.5em;" Class="mb-2" Color="Color.Error" />
+
+            <MudText Typo="Typo.h1" Style="font-size:3.0em; font-weight:900;" Color="Color.Error" Class="mb-2">
+                @_header
+            </MudText>
+
+            <MudText Typo="Typo.body2" Class="mt-4" Style="max-width:350px;">
+                <p>@_message1</p>
+                <p class="mt-4 mb-3">@_message2</p>
+            </MudText>
+
+            @if (Exception != null)
+            {
+                if (StatusCode == (int)HttpStatusCode.InternalServerError ||
+                    StatusCode == (int)HttpStatusCode.BadRequest)
+                {
+                    <MudStack Spacing="2" Class="mt-3" Style="width:100%;">
+                        <MudButton Variant="Variant.Text" Size="Size.Small" OnClick="@(() => _expandDetails = !_expandDetails)">@(_expandDetails ? "Hide" : "Show") Details</MudButton>
+                        <MudCollapse Expanded="_expandDetails">
+                            <MudTextField Value="@_detailsMessage"
+                            ReadOnly="true"
+                            Lines="10"
+                            FullWidth="true"
+                            Variant="Variant.Outlined"
+                            Class="mb-4"
+                            Style="font-family:monospace; font-size:0.85em;" />
+                        </MudCollapse>
+                    </MudStack>
+                }
+            }
+
+            <MudButton Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        OnClick="GoHome"
+                        Size="Size.Medium"
+                        Class="mt-6 mb-4">
+                Return to Home
+            </MudButton>
+
+        </MudPaper>
+    </MudContainer>
+</Dialog>

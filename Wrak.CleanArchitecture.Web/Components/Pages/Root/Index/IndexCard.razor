@@ -1,0 +1,18 @@
+﻿<a href="@Url">
+    <MudCard Class="d-flex align-center justify-center" Style="width:265px;" Elevation="@AppConstants.Card.Elevation">
+        <MudIcon Color="Color.Primary"
+                 Icon="@HeaderIcon"
+                 Class="mt-4 mb-0 py-0"
+                 Style="font-size:4.4rem;">
+        </MudIcon>
+        <MudCardContent Class="ma-0 px-4 py-0">
+            <MudText Typo="Typo.h4" Class="mt-1 mb-0 pa-0" Style="text-align:center;font-weight:600;">@Title</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mt-3" Style="text-align:center;height:55px;">
+                @ChildContent
+            </MudText>
+        </MudCardContent>
+        <MudCardActions Style="justify-content:center;" Class="mt-7 pb-0">
+            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavManager.NavigateTo(Url))" Class="mt-1 mb-6"><strong>View</strong></MudButton>
+        </MudCardActions>
+    </MudCard>
+</a>

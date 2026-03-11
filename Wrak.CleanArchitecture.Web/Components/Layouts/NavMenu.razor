@@ -1,0 +1,41 @@
+﻿<MudNavMenu Class="mt-3" Rounded="false" Bordered="true">
+    @RenderMenuItems(_menuItems)
+</MudNavMenu>
+
+@code {
+    private RenderFragment RenderMenuItems(List<MenuItem> items) => builder =>
+    {
+        int seq = 0;
+
+        foreach (var item in items)
+        {
+            if (item.SubLinks == null || item.SubLinks.Count == 0)
+            {
+                builder.OpenComponent<MudNavLink>(seq++);
+                builder.AddAttribute(seq++, "Href", item.Link.Url);
+                builder.AddAttribute(seq++, "Icon", item.Link.Icon);
+                builder.AddAttribute(seq++, "Match", item.Link.Match);
+                builder.AddAttribute(seq++, "ChildContent", (RenderFragment)(b =>
+                {
+                    b.AddContent(seq++, item.Link.Name);
+                }));
+                builder.CloseComponent();
+            }
+            else
+            {
+                builder.OpenComponent<MudNavGroup>(seq++);
+                builder.AddAttribute(seq++, "Title", item.Link.Name);
+                builder.AddAttribute(seq++, "Icon", item.Link.Icon);
+                builder.AddAttribute(seq++, "ChildContent", RenderMenuItems(item.SubLinks));
+                builder.CloseComponent();
+            }
+
+            if (item.AddDivider)
+            {
+                builder.OpenComponent<MudDivider>(seq++);
+                builder.AddAttribute(seq++, "Class", "my-2 mud-text-secondary");
+                builder.CloseComponent();
+            }
+        }
+    };
+}

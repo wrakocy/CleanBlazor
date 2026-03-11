@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "William Rakocy",
+  "classifications": [
+    "Web",
+    "ASP.NET",
+    "Blazor",
+    "Clean Architecture"
+  ],
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "identity": "Wrak.CleanArchitecture.Template",
+  "name": "ASP.NET with Blazor Clean Architecture Solution",
+  "shortName": "clean-blazor",
+  "sourceName": "Wrak.CleanArchitecture",
+  "templateFileExtensions": [ ".cs", ".csproj", ".slnx" ],
+  "preferNameDirectory": true,
+  "sources": [
+    {
+      "include": [
+        "**/*"
+      ],
+      "exclude": [
+        "**/[Bb]in/**",
+        "**/[Oo]bj/**",
+        "**/*.user",
+        "**/*.suo",
+        ".vs/**",
+        ".git/**",
+        ".github/**",
+        ".template.config/**"
+      ],
+      "modifiers": [
+        {
+          "condition": "true",
+          "copyOnly": [ "*.dll", "*.png", "*.ico", "*.jpg", "*.jpeg", "*.ps1" ]
+        }
+      ]
+    }
+  ]
+}

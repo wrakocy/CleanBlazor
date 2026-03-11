@@ -1,0 +1,12 @@
+﻿@if (Visible)
+{
+    <MudAlert Severity="@Severity"
+              ShowCloseIcon="@ShowCloseIcon"
+              NoIcon="@NoIcon"
+              CloseIconClicked="(() => Visible = false)"
+              ContentAlignment="@ContentAlignment"
+              Elevation="0"
+              Class="@Class">
+        @ChildContent
+    </MudAlert>
+}

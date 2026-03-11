@@ -1,0 +1,21 @@
+﻿@page "/about"
+
+<PageTitle>About</PageTitle>
+<PageHeader>About @_appId.Name</PageHeader>
+
+<MudCard Elevation="@AppConstants.Card.Elevation" Class="pa-5">
+    <MudGrid Spacing="@AppConstants.Grid.Spacing">
+        <MudItem xs="12">
+            <MudText Typo="Typo.caption" Color="Color.Secondary">Build Number</MudText>
+            <MudText Typo="Typo.body1">@BuildInfo.Build</MudText>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.caption" Color="Color.Secondary">Environment</MudText>
+            <MudText Typo="Typo.body1">@_appEnv.GetEnvironment()</MudText>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.caption" Color="Color.Secondary">Copyright</MudText>
+            <MudText Typo="Typo.body1">&copy; @DateTime.UtcNow.Year Your Company</MudText>
+        </MudItem>
+    </MudGrid>
+</MudCard>

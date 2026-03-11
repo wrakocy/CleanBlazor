@@ -1,0 +1,126 @@
+﻿.mud-cal-month-event-row:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.mud-cal-overflow-message {
+    margin-top: 2px;
+    font-size: x-small;
+}
+
+@media (min-width: 600px) {
+    .mud-cal-overflow-message {
+        margin-left: 2px;
+    }
+}
+
+    .mud-cal-overflow-message:hover {
+        text-decoration: underline !important;
+    }
+
+.sfpark-cal-month-today-cell .mud-cal-month-cell-header {
+    font-weight: bolder;
+    color: var(--mud-palette-primary);
+}
+
+.sfpark-cal-month-current-day-cell {
+    outline: 1px dashed var(--mud-palette-secondary);
+    outline-offset: -1px; /* Keeps it inside the cell */
+}
+
+.sfpark-cal-week-current-day-cell {
+    border-left: 1px dashed var(--mud-palette-secondary) !important;
+    border-right: 1px dashed var(--mud-palette-secondary) !important;
+}
+
+.sfpark-cal-week-current-day-top-cell {
+    border-top: 1px dashed var(--mud-palette-secondary) !important;
+}
+
+.sfpark-cal-week-current-day-bottom-cell {
+    border-bottom: 1px dashed var(--mud-palette-secondary) !important;
+}
+
+.sfpark-cal-week-event-cell,
+.sfpark-cal-day-event-cell {
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    margin: 2px;
+    padding: 5px;
+    border-radius: 4px;
+    opacity: 0.90;
+}
+
+    .sfpark-cal-week-event-cell:hover,
+    .sfpark-cal-day-event-cell:hover {
+        outline: 3px solid var(--mud-palette-primary);
+        outline-offset: -3px; /* Keeps it inside the cell */
+    }
+
+.sfpark-cal-month-event-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sfpark-cal-week-event-text,
+.sfpark-cal-day-event-text,
+.sfpark-cal-week-event-text-time,
+.sfpark-cal-day-event-text-time {
+    color: var(--mud-palette-text-primary);
+}
+
+.sfpark-cal-week-event-text,
+.sfpark-cal-day-event-text {
+    font-size: small;
+    font-weight: 700 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.mud-cal-week-grid .mud-cal-drop-item {
+    opacity: 0.9;
+}
+
+.sfpark-cal-week-event-text-time,
+.sfpark-cal-day-event-text-time {
+    font-size: small !important;
+    font-weight: 400 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.sfpark-cal-month-event-text-time-canceled,
+.sfpark-cal-month-event-text-time-published {
+    opacity: 0.7
+}
+
+.sfpark-cal-month-event-icon-canceled,
+.sfpark-cal-month-event-icon-published,
+.sfpark-cal-month-event-text-canceled,
+.sfpark-cal-month-event-text-published {
+    opacity: 0.5;
+}
+
+.sfpark-cal-week-event-cell-canceled,
+.sfpark-cal-week-event-cell-published,
+.sfpark-cal-day-event-cell-canceled,
+.sfpark-cal-day-event-cell-published {
+    opacity: 0.7;
+}
+
+.sfpark-cal-month-event-text-canceled,
+.sfpark-cal-week-event-text-canceled,
+.sfpark-cal-day-event-text-canceled {
+    -webkit-text-decoration: line-through;
+    text-decoration: line-through;
+}
+

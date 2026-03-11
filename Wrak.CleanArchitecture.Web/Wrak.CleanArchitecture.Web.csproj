@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>9575f924-91c0-49c4-a766-16d87f7992ae</UserSecretsId>
+  </PropertyGroup>
+    
+    <ItemGroup>
+    <None Include="Components\Pages\Root\Error\ErrorModal.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ardalis.ListStartupServices" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+    <PackageReference Include="Microsoft.Identity.Web" />
+    <PackageReference Include="MudBlazor" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Enrichers.Environment" />
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Wrak.ListComponentRoutes" />
+    <PackageReference Include="Wrak.RandomData" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Wrak.CleanArchitecture.Infrastructure\Wrak.CleanArchitecture.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
