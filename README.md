@@ -86,8 +86,10 @@ Not generating a client solution — extending the template's own defaults (a ne
 new skill, a new baseline package)? See [docs/02-bootstrap-guide.md](docs/02-bootstrap-guide.md)
 for how the scaffold is built.
 
-Launch it directly via Visual Studio (set `Web` as the startup project, `Development` as its
-environment on the Debug tab), or from the CLI:
+Launch it directly via Visual Studio — open the `.slnx` and hit F5/F6; `Web` is already set as the
+default startup project (`DefaultStartup="true"` in the `.slnx`) and every launch profile in its
+`launchSettings.json` runs with `ASPNETCORE_ENVIRONMENT=Development`, so no manual setup is
+needed. Or from the CLI:
 
 ```bash
 dotnet build Wrak.CleanArchitecture.slnx

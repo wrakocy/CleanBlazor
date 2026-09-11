@@ -28,6 +28,13 @@ CLAUDE.md   (single line: `@AGENTS.md`)
 Use solution folders (`.slnx` `<Folder>` entries, or `.sln` solution folders) that mirror this
 physical layout — don't let the solution's logical view diverge from disk.
 
+Add `DefaultStartup="true"` to the `Web` project's `<Project>` element in the `.slnx` so it's the
+startup project the moment anyone opens the solution in Visual Studio, instead of relying on each
+dev to set it by hand (which historically lived only in the untracked, per-user `.suo` file):
+```xml
+<Project Path="<Company>.<Product>.Web/<Company>.<Product>.Web.csproj" DefaultStartup="true" />
+```
+
 Do **not** create a second unit-test project per source project (e.g. a `Core.UnitTests`
 alongside `UnitTests`) — this playbook's own source solution carries exactly this as dead weight
 from an earlier attempt; don't repeat it. One `UnitTests` project, mirroring

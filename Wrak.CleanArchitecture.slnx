@@ -22,7 +22,7 @@
   <Folder Name="/src/">
     <Project Path="Wrak.CleanArchitecture.Core/Wrak.CleanArchitecture.Core.csproj" />
     <Project Path="Wrak.CleanArchitecture.Infrastructure/Wrak.CleanArchitecture.Infrastructure.csproj" />
-    <Project Path="Wrak.CleanArchitecture.Web/Wrak.CleanArchitecture.Web.csproj" />
+    <Project Path="Wrak.CleanArchitecture.Web/Wrak.CleanArchitecture.Web.csproj" DefaultStartup="true" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="Wrak.CleanArchitecture.FunctionalTests/Wrak.CleanArchitecture.FunctionalTests.csproj" />

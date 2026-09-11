@@ -26,9 +26,9 @@ wired together with dependency injection). See `docs/` for the full architecture
 
 ## Build & Test
 
-Primary workflow is Visual Studio: open `Wrak.CleanArchitecture.slnx`, set
-`Wrak.CleanArchitecture.Web` as the startup project with the `Development` environment, hit F6,
-and run tests from Test Explorer (xUnit + Moq).
+Primary workflow is Visual Studio: open `Wrak.CleanArchitecture.slnx` and hit F6 — `Web` is
+already the default startup project and every launch profile runs with
+`ASPNETCORE_ENVIRONMENT=Development` — then run tests from Test Explorer (xUnit + Moq).
 
 From the CLI:
 
