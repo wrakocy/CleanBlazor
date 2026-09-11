@@ -16,7 +16,7 @@
   "shortName": "blazor-clean",
   "sourceName": "Wrak.CleanArchitecture",
   "templateFileExtensions": [ ".cs", ".csproj", ".slnx", ".razor", ".yml" ],
-  "preferNameDirectory": true,
+  "preferNameDirectory": false,
   "icon": "icon.png",
   "sources": [
     {

@@ -42,19 +42,27 @@ dotnet new blazor-clean -n <Company>.<Product> -o <path-to-new-solution>
 - `-n`/`--name` is the **sourceName replacement** — every occurrence of the literal string
   `Wrak.CleanArchitecture` becomes your `<Company>.<Product>` value, and every file/folder whose
   name contains `Wrak.CleanArchitecture` is renamed to match (see below).
-- `-o`/`--output` is optional. Omit it and the template's `preferNameDirectory` setting kicks in:
-  `dotnet new` creates a new subdirectory named `<Company>.<Product>` under the current directory
-  and generates into that. Pass `-o .` to generate straight into the current directory instead.
+- `-o`/`--output` is optional and defaults to the current directory (`preferNameDirectory` is
+  `false` in `template.json`) — `dotnet new` does **not** create a `<Company>.<Product>`
+  subdirectory on its own. `cd` into (or create) the folder you want the new solution in first,
+  then run the command with no `-o`; or pass `-o <path>` to target a different directory without
+  `cd`-ing there.
 - The target directory does not need to be empty, but an existing file with the same relative path
   as a generated one will cause the command to fail rather than overwrite it — generate into a
   fresh directory.
 
-Example:
+Example — generate into an existing empty directory:
+
+```bash
+mkdir ../Acme.Billing && cd ../Acme.Billing
+dotnet new blazor-clean -n Acme.Billing
+dotnet build Acme.Billing.slnx
+```
+
+Or in one step from anywhere, with `-o`:
 
 ```bash
 dotnet new blazor-clean -n Acme.Billing -o ../Acme.Billing
-cd ../Acme.Billing
-dotnet build Acme.Billing.slnx
 ```
 
 The generated solution builds standalone — no reference back to this repo or its NuGet feed is
