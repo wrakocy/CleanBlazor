@@ -1,6 +1,6 @@
 ---
 description: Add or modify a Blazor Server page/component under Web/Components/Pages/Areas. Use for UI work — search/list pages, detail/edit forms, widgets — not for Core business logic.
-applyTo: "src/*.Web/Components/Pages/**/*.razor,src/*.Web/Components/Pages/**/*.razor.cs"
+applyTo: "*.Web/Components/Pages/**/*.razor,*.Web/Components/Pages/**/*.razor.cs"
 ---
 
 # Add a Blazor Page or Component

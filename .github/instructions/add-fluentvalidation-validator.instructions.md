@@ -1,6 +1,6 @@
 ---
 description: Add or extend a FluentValidation validator for a Core model. Use when a model needs field-level or cross-field business-rule validation, as opposed to the null-guard checks in command constructors.
-applyTo: "src/*.Core/**/Models/**/*Validator.cs"
+applyTo: "*.Core/**/Models/**/*Validator.cs"
 ---
 
 # Add a FluentValidation Validator

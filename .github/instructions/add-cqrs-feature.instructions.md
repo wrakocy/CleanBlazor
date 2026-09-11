@@ -1,6 +1,6 @@
 ---
 description: Add a new Command or Query use case to Core (e.g. "add a create/update/get for X"). Use when the task is a new CRUD-style operation, not a UI-only or validation-only change.
-applyTo: "src/*.Core/**/Features/**/*.cs"
+applyTo: "*.Core/**/Features/**/*.cs"
 ---
 
 # Add a CQRS Feature

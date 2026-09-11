@@ -11,10 +11,10 @@
     "language": "C#",
     "type": "project"
   },
-  "identity": "Wrak.CleanArchitecture.Template",
+  "identity": "Wrak.Clean.Blazor.Template",
   "name": "ASP.NET Core with Blazor and Clean Architecture",
   "shortName": "blazor-clean",
-  "sourceName": "Wrak.CleanArchitecture",
+  "sourceName": "Wrak.Clean.Blazor",
   "templateFileExtensions": [ ".cs", ".csproj", ".slnx", ".razor", ".yml" ],
   "preferNameDirectory": false,
   "icon": "icon.png",

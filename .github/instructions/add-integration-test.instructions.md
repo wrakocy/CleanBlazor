@@ -1,6 +1,6 @@
 ---
 description: Add a test in the solution's IntegrationTests project that exercises a real dependency (a database, a file/byte-format writer, a real network call) rather than a mock. Use when mocking the dependency would leave the actual risk untested — not for ordinary business-logic coverage, which belongs in UnitTests.
-applyTo: "tests/*.IntegrationTests/**/*.cs"
+applyTo: "*.IntegrationTests/**/*.cs"
 ---
 
 # Add an Integration Test

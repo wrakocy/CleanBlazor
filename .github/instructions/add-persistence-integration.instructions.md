@@ -1,6 +1,6 @@
 ---
 description: Add or update how Infrastructure reaches a backing store for a domain — an EF Core repository, an external API client operation, or (for an API) the in-memory cache service that sits in front of it. Use when a handler needs a persistence capability that doesn't exist yet, not for hand-editing generated client code.
-applyTo: "src/*.Infrastructure/**/*.cs"
+applyTo: "*.Infrastructure/**/*.cs"
 ---
 
 # Add a Persistence Integration

@@ -1,6 +1,6 @@
 ---
 description: Repository-wide PR review standards for Copilot Code Review — architecture boundaries, dependency direction, and cross-cutting conventions that apply across Core, Infrastructure, and Web. Derived from AGENTS.md and docs/01-architecture-overview.md. See the other code-review-*.instructions.md files in this folder for layer-specific rules.
-applyTo: "src/**/*.cs,src/**/*.razor,tests/**/*.cs"
+applyTo: "*.Core/**/*.cs,*.Infrastructure/**/*.cs,*.Web/**/*.cs,*.Web/**/*.razor,*.UnitTests/**/*.cs,*.IntegrationTests/**/*.cs,*.FunctionalTests/**/*.cs"
 ---
 
 # Code Review Standards — Repository-Wide

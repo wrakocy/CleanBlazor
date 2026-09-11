@@ -1,6 +1,6 @@
 ---
 description: PR review rules for the Web project — Blazor Server page/component structure, data-access boundaries, shared-component reuse, state-management consistency, and component test coverage. Derived from docs/03-feature-development-guide.md §7 and the add-blazor-page skill. See code-review-standards.instructions.md for repo-wide rules.
-applyTo: "src/*.Web/**/*.razor,src/*.Web/**/*.cs"
+applyTo: "*.Web/**/*.razor,*.Web/**/*.cs"
 ---
 
 # Code Review Standards — Web / Blazor

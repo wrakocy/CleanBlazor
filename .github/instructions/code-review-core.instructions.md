@@ -1,6 +1,6 @@
 ---
 description: PR review rules for the Core project — CQRS use cases, domain events, validators, and models. Derived from docs/03-feature-development-guide.md and the add-cqrs-feature/add-domain-event/add-fluentvalidation-validator skills. See code-review-standards.instructions.md for repo-wide rules (dependency direction, DTO leakage, etc.).
-applyTo: "src/*.Core/**/*.cs"
+applyTo: "*.Core/**/*.cs"
 ---
 
 # Code Review Standards — Core

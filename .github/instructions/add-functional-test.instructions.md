@@ -1,6 +1,6 @@
 ---
 description: Add a full-stack functional test in FunctionalTests for a Blazor page. Use whenever a new page/route is added under Components/Pages/Areas, to prove the route resolves and renders through the real DI-wired app.
-applyTo: "tests/*.FunctionalTests/**/*.cs"
+applyTo: "*.FunctionalTests/**/*.cs"
 ---
 
 # Add a Functional Test

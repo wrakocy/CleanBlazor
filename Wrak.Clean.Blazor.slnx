@@ -1,0 +1,32 @@
+<Solution>
+  <Folder Name="/.azure/">
+    <File Path="azure-pipelines-development.yml" />
+    <File Path="azure-pipelines-production.yml" />
+    <File Path="azure-pipelines-test.yml" />
+  </Folder>
+  <Folder Name="/.config/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Packages.props" />
+    <File Path="nuget.config" />
+  </Folder>
+  <Folder Name="/.docs/">
+    <File Path="DomainEvents.png" />
+    <File Path="README.md" />
+    <File Path="SolutionStructure.png" />
+  </Folder>
+  <Folder Name="/.scripts/">
+    <File Path="Clean-Solution.ps1" />
+    <File Path="Verify-Package-Versions.ps1" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="Wrak.Clean.Blazor.Core/Wrak.Clean.Blazor.Core.csproj" />
+    <Project Path="Wrak.Clean.Blazor.Infrastructure/Wrak.Clean.Blazor.Infrastructure.csproj" />
+    <Project Path="Wrak.Clean.Blazor.Web/Wrak.Clean.Blazor.Web.csproj" DefaultStartup="true" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="Wrak.Clean.Blazor.FunctionalTests/Wrak.Clean.Blazor.FunctionalTests.csproj" />
+    <Project Path="Wrak.Clean.Blazor.IntegrationTests/Wrak.Clean.Blazor.IntegrationTests.csproj" />
+    <Project Path="Wrak.Clean.Blazor.UnitTests/Wrak.Clean.Blazor.UnitTests.csproj" />
+  </Folder>
+</Solution>

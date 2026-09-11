@@ -1,0 +1,6 @@
+﻿@using Wrak.Clean.Blazor.Core.Shared.Interfaces
+@using Wrak.Clean.Blazor.Web.Components.Layouts
+
+<Microsoft.AspNetCore.Components.Web.PageTitle>
+    @(_appEnv.IsNot(EnvironmentType.Production) ? _appEnv.GetEnvironment().ToDisplayName() + " | " : string.Empty)@_appId.Name | @ChildContent
+</Microsoft.AspNetCore.Components.Web.PageTitle>

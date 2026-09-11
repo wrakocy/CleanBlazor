@@ -1,6 +1,6 @@
 ---
 description: Add a unit test in the solution's UnitTests project. Use whenever adding or changing behavior in Core, Infrastructure, or Web that needs test coverage — covers this repo's naming, Moq, and test-data-builder conventions.
-applyTo: "tests/*.UnitTests/**/*.cs"
+applyTo: "*.UnitTests/**/*.cs"
 ---
 
 # Add a Unit Test

@@ -1,6 +1,6 @@
 ---
 description: Add a domain event and its handler(s) so other parts of the app (typically in-memory caches) react when a command changes state. Use when a create/update/delete handler needs to notify other services, not for request/response data flow.
-applyTo: "src/*.Core/**/Events/**/*.cs"
+applyTo: "*.Core/**/Events/**/*.cs"
 ---
 
 # Add a Domain Event

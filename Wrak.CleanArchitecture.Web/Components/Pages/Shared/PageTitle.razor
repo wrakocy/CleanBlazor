@@ -1,6 +1,0 @@
-﻿@using Wrak.CleanArchitecture.Core.Shared.Interfaces
-@using Wrak.CleanArchitecture.Web.Components.Layouts
-
-<Microsoft.AspNetCore.Components.Web.PageTitle>
-    @(_appEnv.IsNot(EnvironmentType.Production) ? _appEnv.GetEnvironment().ToDisplayName() + " | " : string.Empty)@_appId.Name | @ChildContent
-</Microsoft.AspNetCore.Components.Web.PageTitle>

@@ -1,6 +1,6 @@
 ---
 description: PR review rules for the UnitTests, IntegrationTests, and FunctionalTests projects — naming, structure, and scope of each test kind. Derived from docs/04-testing-guide.md and the add-unit-test/add-integration-test/add-functional-test skills. See code-review-standards.instructions.md for the cross-cutting "does this PR need a test" rules.
-applyTo: "tests/**/*.cs"
+applyTo: "*.UnitTests/**/*.cs,*.IntegrationTests/**/*.cs,*.FunctionalTests/**/*.cs"
 ---
 
 # Code Review Standards — Tests

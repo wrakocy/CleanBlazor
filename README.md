@@ -1,9 +1,14 @@
-# Wrak.CleanArchitecture
+# Wrak.Clean.Blazor
 
 A template for spinning up new Blazor Server / Clean Architecture solutions: CQRS via MediatR, FluentValidation, and a Blazor Server UI (MudBlazor), wired together
 with dependency injection. This repo has no business domain of its own — it exists to be
 generated (via `dotnet new`, below) into a fresh, client-specific solution, already carrying this
 codebase's conventions and its AI-agent guidance.
+
+Looking for a React frontend instead of Blazor Server? See the sibling template,
+[wrak.clean.react](https://github.com/wrakocy/wrak.clean.react) — same `Core`/`Infrastructure`
+backend conventions, an ASP.NET Core Web API + React SPA in place of Blazor. The two are fully
+independent repos; nothing is shared between them.
 
 ## Quickstart: generate a new client solution
 
@@ -91,8 +96,8 @@ default startup project (`DefaultStartup="true"` in the `.slnx`) and every launc
 needed. Or from the CLI:
 
 ```bash
-dotnet build Wrak.CleanArchitecture.slnx
-dotnet test Wrak.CleanArchitecture.slnx
+dotnet build Wrak.Clean.Blazor.slnx
+dotnet test Wrak.Clean.Blazor.slnx
 ```
 
 ## Further reading

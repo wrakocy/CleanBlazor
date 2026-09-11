@@ -1,0 +1,14 @@
+﻿@inherits LoggingErrorBoundaryBase
+
+@using Microsoft.AspNetCore.Components.Web
+@using Wrak.Clean.Blazor.Core.Shared.Interfaces
+@using Wrak.Clean.Blazor.Web.Components.Layouts
+
+@if (CurrentException is null)
+{
+    @ChildContent
+}
+else if (ErrorContent is not null)
+{
+    @ErrorContent(CurrentException)
+}

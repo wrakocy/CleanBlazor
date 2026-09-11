@@ -1,6 +1,6 @@
 ---
 description: PR review rules for the Infrastructure project — persistence (EF Core and/or external API), the cache-service pattern, and cross-cutting filters. Derived from docs/01-architecture-overview.md, docs/02-bootstrap-guide.md §4, and the add-persistence-integration skill. See code-review-standards.instructions.md for repo-wide rules.
-applyTo: "src/*.Infrastructure/**/*.cs"
+applyTo: "*.Infrastructure/**/*.cs"
 ---
 
 # Code Review Standards — Infrastructure

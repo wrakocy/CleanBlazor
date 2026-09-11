@@ -8,25 +8,29 @@ choice where it matters, marked **[API]** / **[DB]** / **[Both]**.
 
 ## 1. Solution & folder layout
 
+Projects sit **flat at the repo root** — there is no physical `/src/` or `/tests/` directory:
+
 ```
-/.config/         .editorconfig, Directory.Build.props, Directory.Packages.props, nuget.config
-/.docs/           README.md, architecture diagrams
-/.scripts/        any one-off maintenance scripts (e.g. Clean-Solution.ps1)
-/src/
-  <Company>.<Product>.Core/
-  <Company>.<Product>.Infrastructure/
-  <Company>.<Product>.Web/
-/tests/
-  <Company>.<Product>.UnitTests/
-  <Company>.<Product>.IntegrationTests/
-  <Company>.<Product>.FunctionalTests/
+<Company>.<Product>.Core/
+<Company>.<Product>.Infrastructure/
+<Company>.<Product>.Web/
+<Company>.<Product>.UnitTests/
+<Company>.<Product>.IntegrationTests/
+<Company>.<Product>.FunctionalTests/
 <Company>.<Product>.slnx
+.editorconfig, Directory.Build.props, Directory.Packages.props, nuget.config
+Clean-Solution.ps1, Verify-Package-Versions.ps1
+README.md, architecture diagrams
 AGENTS.md   (copy from this playbook's AGENTS.md, fill in the placeholders)
 CLAUDE.md   (single line: `@AGENTS.md`)
 ```
 
-Use solution folders (`.slnx` `<Folder>` entries, or `.sln` solution folders) that mirror this
-physical layout — don't let the solution's logical view diverge from disk.
+`/src/`, `/tests/`, `/.config/`, `/.docs/`, `/.scripts/` exist only as **logical** groupings —
+`.slnx` `<Folder>` entries (or `.sln` solution folders) that organize the Solution Explorer view
+without matching disk. Use them to group the files above the same way this repo's own `.slnx`
+does; don't try to make the physical layout match them; a flat root keeps `applyTo` globs in
+`.github/instructions/*.instructions.md` simple (`*.Core/**/*.cs`, not `src/*.Core/**/*.cs`) since
+there's no `src/`/`tests/` segment to match.
 
 Add `DefaultStartup="true"` to the `Web` project's `<Project>` element in the `.slnx` so it's the
 startup project the moment anyone opens the solution in Visual Studio, instead of relying on each
