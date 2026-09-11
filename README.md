@@ -35,9 +35,9 @@ behaves against this template.
   conventions from the first commit — nothing to re-teach it per client.
 - A few things generation deliberately does **not** decide for you: the persistence-model
   checkbox and one-line domain description in `AGENTS.md`/`copilot-instructions.md` (still
-  placeholders), and this README itself, which is written from the template's point of view and
-  should be replaced with something describing the client's actual product. See the
-  `create-solution` skill for the full fill-in-the-blanks checklist.
+  placeholders, called out by the HTML comments already sitting in both files), and this README
+  itself, which is written from the template's point of view and should be replaced with
+  something describing the client's actual product.
 
 ## Architecture at a glance
 

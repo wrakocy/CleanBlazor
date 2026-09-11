@@ -90,8 +90,8 @@ or `grep -r Wrak.CleanArchitecture <generated-folder>` — a clean generation re
 ## What still needs manual editing
 
 The rename above is purely textual; it does not know anything about your actual domain. After
-generating, still do this by hand (same list as `AGENTS.md`'s persistence-model checkbox and the
-`create-solution` skill's step 7):
+generating, still do this by hand — the HTML comments already sitting in `AGENTS.md` and
+`.github/copilot-instructions.md` call out exactly this:
 
 - **`AGENTS.md` / `.github/copilot-instructions.md`** — the name is already correct, but the
   persistence-model checkbox (`[ ]` API / DB / Both) and the one-line domain description are

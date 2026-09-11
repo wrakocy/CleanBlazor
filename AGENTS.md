@@ -44,7 +44,6 @@ dotnet test Wrak.CleanArchitecture.slnx
 
 ## Available Skills
 
-- `create-solution` — bootstrap a brand-new solution following this architecture.
 - `add-cqrs-feature` — add a Command and/or Query use case to Core.
 - `add-domain-event` — add a domain event and handler published through `IAppBus`.
 - `add-fluentvalidation-validator` — add a FluentValidation validator for a Core model.

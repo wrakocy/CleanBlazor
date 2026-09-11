@@ -52,8 +52,6 @@ dotnet test Wrak.CleanArchitecture.slnx
 Detailed, per-task instructions live in `.github/instructions/*.instructions.md` and apply
 automatically based on the files being edited:
 
-- `create-solution.instructions.md` — bootstrapping a brand-new solution following this
-  architecture (invoke this one explicitly — there's no file to edit yet for it to auto-apply to).
 - `add-cqrs-feature.instructions.md` — adding a Command/Query use case to Core.
 - `add-domain-event.instructions.md` — adding a domain event and handler published through
   `IAppBus`.
