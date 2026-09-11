@@ -4,7 +4,7 @@
          Model="@Model"
          Style="@Style"
          Class="@Class"
-         FieldChanged="@(_ => _form.Validate())"
+         FieldChanged="@(_ => _form.ValidateAsync())"
          Validation="@(_validator.ValidateModel)"
          SuppressImplicitSubmission="@SuppressImplicitSubmission"
          IsValidChanged="@(StateHasChanged)">

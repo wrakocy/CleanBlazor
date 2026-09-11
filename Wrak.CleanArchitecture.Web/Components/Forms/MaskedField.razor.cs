@@ -86,7 +86,7 @@ public abstract class MaskedFieldBase<T> : ComponentBase, IDisposable
     {
         Value = ConvertMaskedValue(maskedValue);
         await OnValueUpdated(Value);
-        if (_form != null) await _form.Validate();
+        if (_form != null) await _form.ValidateAsync();
 
         StateHasChanged();
     }

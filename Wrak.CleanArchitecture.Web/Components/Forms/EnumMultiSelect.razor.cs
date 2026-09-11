@@ -37,6 +37,6 @@ public partial class EnumMultiSelect<TEnum> where TEnum : struct, Enum
         // MudTextField does. To mimic that behavior,
         // we explicitly validate the entire form when the
         // selected values change.
-        if (_form != null) await _form.Validate();
+        if (_form != null) await _form.ValidateAsync();
     }
 }
