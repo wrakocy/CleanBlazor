@@ -1,7 +1,6 @@
 # Wrak.CleanArchitecture
 
-An internal template for spinning up new Blazor Server / Clean Architecture solutions for
-clients: CQRS via MediatR, FluentValidation, and a Blazor Server UI (MudBlazor), wired together
+A template for spinning up new Blazor Server / Clean Architecture solutions: CQRS via MediatR, FluentValidation, and a Blazor Server UI (MudBlazor), wired together
 with dependency injection. This repo has no business domain of its own — it exists to be
 generated (via `dotnet new`, below) into a fresh, client-specific solution, already carrying this
 codebase's conventions and its AI-agent guidance.
