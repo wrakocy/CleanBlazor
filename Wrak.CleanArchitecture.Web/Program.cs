@@ -1,5 +1,4 @@
-using Ardalis.ListStartupServices;
-using Wrak.CleanArchitecture.Web.Extensions;
+﻿using Ardalis.ListStartupServices;
 using Wrak.ListComponentRoutes;
 
 try

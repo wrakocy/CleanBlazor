@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 using Wrak.CleanArchitecture.Core.Shared.Interfaces;
-using Wrak.CleanArchitecture.Web.Extensions;
 using Wrak.CleanArchitecture.Web.Interfaces;
 
 namespace Wrak.CleanArchitecture.Web.Services;
