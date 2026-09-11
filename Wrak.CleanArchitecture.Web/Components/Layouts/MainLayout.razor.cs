@@ -1,6 +1,4 @@
-﻿using Microsoft.ApplicationInsights;
-using Microsoft.AspNetCore.Components.Routing;
-using Wrak.CleanArchitecture.Core.Shared.Interfaces;
+﻿using Wrak.CleanArchitecture.Core.Shared.Interfaces;
 using Wrak.CleanArchitecture.Web.Interfaces;
 
 namespace Wrak.CleanArchitecture.Web.Components.Layouts;
@@ -11,8 +9,6 @@ public partial class MainLayout : LayoutComponentBase, IBrowserViewportObserver,
     [Inject] private IAppIdentity _appId { get; set; } = default!;
     [Inject] private IAppEnvironment _appEnv { get; set; } = default!;
     [Inject] private IBrowserViewportService _viewportService { get; set; } = default!;
-    [Inject] private NavigationManager _navManager { get; set; } = default!;
-    [Inject] private TelemetryClient _telemetryClient { get; set; } = default!;
 
     public Guid Id => _observerId;
 
@@ -33,7 +29,6 @@ public partial class MainLayout : LayoutComponentBase, IBrowserViewportObserver,
         await InitializeUserContext();
 
         InitializeAppTheme();
-        InitializePageViewTracking();
 
         await InitializeViewportObserving();
     }
@@ -149,21 +144,10 @@ public partial class MainLayout : LayoutComponentBase, IBrowserViewportObserver,
         };
     }
 
-    private void InitializePageViewTracking()
-    {
-        _navManager.LocationChanged += OnLocationChanged;
-    }
-
     private async Task InitializeViewportObserving()
     {
         _observerId = Guid.NewGuid();
         await _viewportService.SubscribeAsync(this);
-    }
-
-    private void TerminatePageViewTracking()
-    {
-        if (_navManager != null)
-            _navManager.LocationChanged -= OnLocationChanged;
     }
 
     private async Task TerminateViewportObserving()
@@ -172,18 +156,11 @@ public partial class MainLayout : LayoutComponentBase, IBrowserViewportObserver,
             await _viewportService.UnsubscribeAsync(this);
     }
 
-    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        // Track page views in Application Insights.
-        _telemetryClient.TrackPageView(e.Location);
-    }
-
     private void OnDrawerToggle() => _drawerOpen = !_drawerOpen;
 
     public async ValueTask DisposeAsync()
     {
         GC.SuppressFinalize(this);
-        TerminatePageViewTracking();
         await TerminateViewportObserving();
     }
 }

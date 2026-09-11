@@ -1,12 +1,35 @@
-# Introduction 
+# Introduction
 
-A solution for ??? TODO ???.
+A Blazor Server starting point for building a new application on Clean Architecture — CQRS
+via MediatR, FluentValidation, and a Blazor Server UI (MudBlazor), with dependency injection
+wiring everything together. This solution has no business domain of its own yet; it's meant to
+be cloned (or generated via `dotnet new`, see below) and built out from here.
+
+See [AGENTS.md](AGENTS.md) and [docs/](docs/) for the full architecture write-up, plus
+[.claude/skills/](.claude/skills/) and [.github/instructions/](.github/instructions/) for
+step-by-step guidance an AI coding agent (Claude Code or GitHub Copilot) can follow to bootstrap
+a new solution from this template and then build it out feature by feature.
 
 # Getting Started
 
 You can launch the application via Visual Studio (being sure to set Web as your startup project
 and Development as Web's environment on the project's Debug tab).
 
+## Generating a new solution from this template
+
+This repo is also registered as a `dotnet new` template (see `.template.config/template.json`).
+From a clone of this repo:
+
+```bash
+dotnet new install .
+dotnet new blazor-clean -n <Company>.<Product> -o <path-to-new-solution>
+```
+
+This renames every `Wrak.CleanArchitecture` reference (namespaces, project names, the solution
+file) to your chosen name across `.cs`, `.csproj`, `.slnx`, `.razor`, and `.yml` files. It does
+**not** rewrite `AGENTS.md`/`README.md`/`copilot-instructions.md` — fill in their placeholders by
+hand (or ask your agent to) once the new solution exists; see `AGENTS.md`'s persistence-model
+checkbox and the `create-solution` skill.
 
 # Build and Test
 
@@ -49,8 +72,10 @@ Under the hood, Core depends on `Mediatr` to send commands, queries and events t
 
 # The Infrastructure Project
 
-Most of the application's dependencies on external resources (including databases) should be implemented 
-in classes defined in the Infrastructure project. These classes should implement interfaces defined in Core. 
+Most of the application's dependencies on external resources (including databases and external APIs) should be
+implemented in classes defined in the Infrastructure project. These classes should implement interfaces defined
+in Core — see [docs/01-architecture-overview.md](docs/01-architecture-overview.md) for the two persistence
+shapes this solution supports (an external API client, a database via EF Core, or both).
 
 # The Web Project
 
@@ -100,3 +125,11 @@ To implement this pattern, we currently rely on the following package:
 - [Throw](https://github.com/amantinband/throw)
 
 Note that this package is extensible, making it very easy to add custom guard clauses that suit our particular needs.
+
+# Building Out a New Feature
+
+Once you've generated a new solution from this template (or are working directly in this repo to extend the
+template itself), see [docs/03-feature-development-guide.md](docs/03-feature-development-guide.md) for the
+canonical shape of a new CQRS feature, domain event, validator, persistence integration, and Blazor page —
+or just ask your agent (Claude Code or GitHub Copilot) to add one; it already knows these conventions via
+`.claude/skills/`/`.github/instructions/`.

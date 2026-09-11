@@ -1,20 +1,23 @@
-﻿using System.Net;
+using System.Net;
 using Ardalis.ListStartupServices;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using FluentValidation;
 using MediatR;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 using MudBlazor.Services;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Serilog.Events;
 using Wrak.CleanArchitecture.Core;
 using Wrak.CleanArchitecture.Core.Shared.Interfaces;
 using Wrak.CleanArchitecture.Infrastructure;
 using Wrak.CleanArchitecture.Infrastructure.Filters;
 using Wrak.CleanArchitecture.Web.Components.App;
-using Wrak.CleanArchitecture.Web.Extensions;
 using Wrak.CleanArchitecture.Web.Filters;
 using Wrak.CleanArchitecture.Web.Interfaces;
 using Wrak.CleanArchitecture.Web.Services;
@@ -22,7 +25,7 @@ using Wrak.ListComponentRoutes;
 
 namespace Wrak.CleanArchitecture.Web.Extensions;
 
-public static class ServiceExtensions
+public static class DependencyInjectionExtensions
 {
     public static void AddInteractiveBlazorServer(this WebApplicationBuilder builder)
     {
@@ -48,6 +51,8 @@ public static class ServiceExtensions
 
     public static void AddAuthorization(this WebApplicationBuilder builder)
     {
+        // TODO: Add policies as needed.
+        // For now, just add the service with default options.
         builder.Services.AddAuthorization();
     }
 
@@ -79,32 +84,70 @@ public static class ServiceExtensions
         builder.Services.AddHealthChecks();
     }
 
-    public static void AddApplicationInsightsTelemetry(this WebApplicationBuilder builder)
+    public static void ClearDefaultLoggingProviders(this WebApplicationBuilder builder)
     {
-        builder.Services.AddApplicationInsightsTelemetry();
+        builder.Logging.ClearProviders();
+        builder.Logging.AddFilter<OpenTelemetryLoggerProvider>("*", LogLevel.None); // suppress OTel log bridge — Serilog handles logs
     }
 
-    public static void AddSerilog(this WebApplicationBuilder builder, IWebHostEnvironment env)
+    public static void AddOpenTelemetry(this WebApplicationBuilder builder)
     {
-        builder.Host.UseSerilog((_, services, config) =>
+        var connectionString = builder.Configuration.GetApplicationInsightsConnectionString();
+        if (string.IsNullOrEmpty(connectionString)) return;
+
+        var otelBuilder = builder.Services.AddOpenTelemetry()
+            .ConfigureResource(resource => resource
+                .AddService(
+                    serviceName: AppConstants.ServiceName,
+                    serviceVersion: $"{BuildInfo.Build}"));
+
+        otelBuilder.UseAzureMonitor(options =>
         {
-            var logConfig = config.ReadFrom.Configuration(builder.Configuration);
-            var telemetryConfig = services.GetRequiredService<TelemetryConfiguration>();
-
-            logConfig.MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning);
-
-            logConfig.Enrich.WithProperty("Environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")!)
-                     .Enrich.WithProperty("ApplicationName", "Wrak.CleanArchitecture.Web")
-                     .Enrich.WithProperty("Product", "Wrak.CleanArchitecture.Web")
-                     .Enrich.WithProperty("Version", $"{BuildInfo.Build}")
-                     .Enrich.FromLogContext()
-                     .Enrich.WithEnvironmentUserName()
-                     .Enrich.WithMachineName();
-
-            logConfig.WriteTo.ApplicationInsights(
-                    telemetryConfig,
-                    TelemetryConverter.Traces);
+            options.ConnectionString = connectionString;
+            options.SamplingRatio = 0.1f;
         });
+
+        otelBuilder
+            .WithTracing(tracing => tracing
+                .AddAspNetCoreInstrumentation(options =>
+                {
+                    options.Filter = ctx =>
+                        !ctx.Request.Path.StartsWithSegments("/health") &&
+                        !ctx.Request.Path.StartsWithSegments("/_framework");
+                })
+                .AddHttpClientInstrumentation())
+            .WithMetrics(metrics => metrics
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation());
+    }
+
+    public static void AddSerilog(this WebApplicationBuilder builder)
+    {
+        var connectionString = builder.Configuration.GetApplicationInsightsConnectionString();
+        var sp = builder.Services.BuildServiceProvider();
+        var userEnricher = sp.GetRequiredService<UserContextLogService>();
+
+        var loggerConfig = new LoggerConfiguration()
+            .ReadFrom.Configuration(builder.Configuration)
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.Extensions.Localization", LogEventLevel.Error)
+            .MinimumLevel.Override("System", LogEventLevel.Warning)
+            .Enrich.WithProperty("Environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")!)
+            .Enrich.WithProperty("ApplicationName", AppConstants.ServiceName)
+            .Enrich.WithProperty("Version", $"{BuildInfo.Build}")
+            .Enrich.FromLogContext()
+            .Enrich.With(userEnricher);
+
+        if (!string.IsNullOrEmpty(connectionString))
+            loggerConfig.WriteTo.ApplicationInsights(connectionString, TelemetryConverter.Traces);
+
+        Log.Logger = loggerConfig.CreateLogger();
+
+        // Use AddSerilog() instead of UseSerilog() — this ADDS Serilog as a logging
+        // provider rather than REPLACING ILoggerFactory, so the OTel logging bridge
+        // registered by UseAzureMonitor() is preserved and logs flow to Azure Monitor.
+        builder.Logging.AddSerilog(Log.Logger, dispose: false);
     }
 
     public static void AddOptions(this WebApplicationBuilder builder)
@@ -112,7 +155,8 @@ public static class ServiceExtensions
         var services = builder.Services;
         var config = builder.Configuration;
 
-        // TODO
+        // TODO: bind and validate any Options types this solution needs, e.g.:
+        // services.AddOptions<SomeApiOptions>().Bind(config.GetSection("SomeApiOptions")).ValidateDataAnnotations();
     }
 
     public static void AddMediatr(this WebApplicationBuilder builder)
@@ -139,8 +183,8 @@ public static class ServiceExtensions
     {
         var services = builder.Services;
 
-        // allow Blazor ciruit-scoped services to
-        // access services not scoped to the circuit
+        // needed to allow Blazor ciruit-scoped services to
+        // access services scoped to the circuit
         services.AddCircuitServicesAccessor();
     }
 
@@ -151,6 +195,7 @@ public static class ServiceExtensions
 
         services.AddSingleton<IAppIdentity>(x => new AppIdentity());
         services.AddSingleton<IAppEnvironment>(x => new AppEnvironment(envVar!));
+        services.AddSingleton<UserContextLogService>();
 
         services.AddScoped<IAppState, AppState>();
         services.AddScoped<IUserContextService, UserContextService>();
@@ -166,8 +211,6 @@ public static class ServiceExtensions
 
     public static void AddListServices(this WebApplicationBuilder builder)
     {
-        var services = builder.Services;
-
         // add list services for diagnostic purposes
         // see https://github.com/ardalis/AspNetCoreStartupServices
         builder.Services.Configure<ServiceConfig>(config =>
@@ -179,9 +222,7 @@ public static class ServiceExtensions
 
     public static void AddListComponentRoutes(this WebApplicationBuilder builder)
     {
-        var services = builder.Services;
-
-        services.AddListComponentRoutes(options =>
+        builder.Services.AddListComponentRoutes(options =>
         {
             options.Assemblies = [typeof(WebMarker).Assembly];
         });
@@ -192,8 +233,8 @@ public static class ServiceExtensions
         app.MapFallback(context =>
         {
             // NOTE: Blazor Web Apps (.NET 9 and up) don't use the NotFound
-            // parameter (<NotFound>...</NotFound> markup in Route.cs), but 
-            // the parameter is still supported for backward compatibility. The 
+            // parameter (<NotFound>...</NotFound> markup in Route.cs), but
+            // the parameter is still supported for backward compatibility. The
             // server-side ASP.NET Core middleware pipeline handles the requests.
             // Given this, for now, we must use server-side techniques to handle
             // requests for bad URLs. The downside here is that doing so
@@ -202,7 +243,6 @@ public static class ServiceExtensions
             // but is an acceptable trade off for now, barring user complaints.
 
             // For more information, see: https://github.com/dotnet/aspnetcore/issues/45654
-
             var status = (int)HttpStatusCode.NotFound;
             context.Response.ContentType = "text/html";
             context.Response.StatusCode = status;
@@ -240,6 +280,11 @@ public static class ServiceExtensions
     {
         app.MapRazorComponents<App>()
            .AddInteractiveServerRenderMode()
-           .RequireAuthorization(); // Require authorization for all server-rendered components.
+           .RequireAuthorization();
+    }
+
+    private static string? GetApplicationInsightsConnectionString(this ConfigurationManager config)
+    {
+        return config["ApplicationInsights:ConnectionString"];
     }
 }

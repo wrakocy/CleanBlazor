@@ -15,7 +15,7 @@
   "name": "ASP.NET Core with Blazor and Clean Architecture",
   "shortName": "blazor-clean",
   "sourceName": "Wrak.CleanArchitecture",
-  "templateFileExtensions": [ ".cs", ".csproj", ".slnx" ],
+  "templateFileExtensions": [ ".cs", ".csproj", ".slnx", ".razor", ".yml" ],
   "preferNameDirectory": true,
   "icon": "icon.png",
   "sources": [
@@ -30,7 +30,6 @@
         "**/*.suo",
         ".vs/**",
         ".git/**",
-        ".github/**",
         ".template.config/**"
       ],
       "modifiers": [

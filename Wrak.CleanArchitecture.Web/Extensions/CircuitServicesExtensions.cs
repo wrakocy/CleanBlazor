@@ -37,7 +37,7 @@ public static class CircuitServicesServiceCollectionExtensions
     public static IServiceCollection AddCircuitServicesAccessor(
         this IServiceCollection services)
     {
-        services.AddScoped<ICircuitServicesAccessor, CircuitServicesAccessor>();
+        services.AddSingleton<ICircuitServicesAccessor, CircuitServicesAccessor>();
         services.AddScoped<CircuitHandler, ServicesAccessorCircuitHandler>();
 
         return services;

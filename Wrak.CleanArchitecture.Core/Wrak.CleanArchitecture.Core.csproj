@@ -7,15 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="AllowedValues\**" />
-    <Compile Remove="Rates\**" />
-    <EmbeddedResource Remove="AllowedValues\**" />
-    <EmbeddedResource Remove="Rates\**" />
-    <None Remove="AllowedValues\**" />
-    <None Remove="Rates\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Serilog" />

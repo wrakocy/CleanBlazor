@@ -2,6 +2,8 @@
 
 public static class AppConstants
 {
+    public static readonly string ServiceName = "Wrak.CleanArchitecture.Web";
+
     public static class Card
     {
         public static readonly int Elevation = 1;

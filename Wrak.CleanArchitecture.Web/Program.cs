@@ -1,4 +1,4 @@
-﻿using Ardalis.ListStartupServices;
+using Ardalis.ListStartupServices;
 using Wrak.CleanArchitecture.Web.Extensions;
 using Wrak.ListComponentRoutes;
 
@@ -9,18 +9,19 @@ try
     var env = builder.Environment;
     var config = builder.Configuration;
 
+    builder.AddCoreServices();
+    builder.AddInfrastructureServices();
+    builder.AddWebServices(); // must be called before adding Serilog
+    builder.ClearDefaultLoggingProviders(); // must be called before adding OTel or Serilog
+    builder.AddOpenTelemetry();
+    builder.AddSerilog();
     builder.AddInteractiveBlazorServer();
     builder.AddMudBlazor();
     builder.AddAuthentication(config, env);
     builder.AddAuthorization();
     builder.AddHealthChecks();
-    builder.AddApplicationInsightsTelemetry();
-    builder.AddSerilog(env);
     builder.AddOptions();
     builder.AddMediatr();
-    builder.AddCoreServices();
-    builder.AddInfrastructureServices();
-    builder.AddWebServices();
     builder.AddListServices();
     builder.AddListComponentRoutes();
 
