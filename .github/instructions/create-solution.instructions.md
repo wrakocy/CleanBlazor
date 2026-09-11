@@ -9,14 +9,18 @@ applyTo: "**"
 
 # Create a New Solution
 
-Full detail lives in `docs/02-bootstrap-guide.md` — this file is the condensed checklist. Before
-starting, confirm with the user (or infer from their request) three decisions that change what
-gets built:
+Building from an empty repo? Full detail lives in `docs/02-bootstrap-guide.md` — this file is the
+condensed checklist. Generating instead from this repo via `dotnet new blazor-clean` (see
+`docs/00-using-as-a-template.md`)? Most of steps 1–6 below are already done for you — skip to
+step 7. Before starting, confirm with the user (or infer from their request) three decisions that
+change what gets built:
 
 1. **Persistence**: external API client(s), a database via EF Core, or both.
 2. **Company/Product name** — used for every namespace/project (`<Company>.<Product>.Core`, etc.).
-3. Anything else in `README.md`'s "Decisions already made" section the user wants to override
-   (auth provider, observability stack, UI framework).
+3. Anything else this playbook already bakes in a default for that the user wants to override —
+   auth provider (bootstrap guide §6: an unimplemented placeholder outside Development), the
+   observability stack (bootstrap guide §7: Serilog + OpenTelemetry + Azure Monitor), or the UI
+   framework (README's "The Web Project" section: MudBlazor + Heron MudCalendar).
 
 ## Steps
 

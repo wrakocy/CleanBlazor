@@ -25,11 +25,13 @@ dotnet new install .
 dotnet new blazor-clean -n <Company>.<Product> -o <path-to-new-solution>
 ```
 
-This renames every `Wrak.CleanArchitecture` reference (namespaces, project names, the solution
-file) to your chosen name across `.cs`, `.csproj`, `.slnx`, `.razor`, and `.yml` files. It does
-**not** rewrite `AGENTS.md`/`README.md`/`copilot-instructions.md` — fill in their placeholders by
-hand (or ask your agent to) once the new solution exists; see `AGENTS.md`'s persistence-model
-checkbox and the `create-solution` skill.
+This renames every `Wrak.CleanArchitecture` reference (namespaces, project/folder names, the
+solution file) to your chosen name, across essentially every text file in the repo — including
+`AGENTS.md` and `copilot-instructions.md`. It does **not** fill in the placeholders those two
+files still carry (the persistence-model checkbox, a one-line domain description) — do that by
+hand (or ask your agent to) once the new solution exists; see the `create-solution` skill. Full
+detail, including exactly what does and doesn't get renamed and how to troubleshoot the template
+install, lives in [docs/00-using-as-a-template.md](docs/00-using-as-a-template.md).
 
 # Build and Test
 
