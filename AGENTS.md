@@ -104,11 +104,12 @@ dotnet test Wrak.Clean.Blazor.slnx
 Before opening a PR:
 
 1. Implementation complete.
-2. Relevant local checks pass: `dotnet build`, `dotnet test`.
-3. Run the `code-reviewer` subagent against the diff.
-4. Run the `test-reviewer` subagent against the diff.
-5. Review both sets of findings and decide what to address — these subagents report
+2. Run `dotnet format Wrak.Clean.Blazor.slnx` to apply formatting.
+3. Relevant local checks pass: `dotnet build`, `dotnet test`.
+4. Run the `code-reviewer` subagent against the diff.
+5. Run the `test-reviewer` subagent against the diff.
+6. Review both sets of findings and decide what to address — these subagents report
    independently of each other and do not modify anything themselves.
-6. Resolve the findings you agree with, then rerun `dotnet build`/`dotnet test`.
-7. Open the PR. Existing CI and human review apply unchanged — these subagents supplement that
+7. Resolve the findings you agree with, then rerun `dotnet format`, `dotnet build`, `dotnet test`.
+8. Open the PR. Existing CI and human review apply unchanged — these subagents supplement that
    process, not replace it.
