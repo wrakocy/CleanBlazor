@@ -98,3 +98,17 @@ dotnet test Wrak.Clean.Blazor.slnx
   only, mirroring source namespaces.
 - MUST NOT name a functional test class after its containing folder when it doesn't match the page
   it tests — name it after the page.
+
+## PR Workflow
+
+Before opening a PR:
+
+1. Implementation complete.
+2. Relevant local checks pass: `dotnet build`, `dotnet test`.
+3. Run the `code-reviewer` subagent against the diff.
+4. Run the `test-reviewer` subagent against the diff.
+5. Review both sets of findings and decide what to address — these subagents report
+   independently of each other and do not modify anything themselves.
+6. Resolve the findings you agree with, then rerun `dotnet build`/`dotnet test`.
+7. Open the PR. Existing CI and human review apply unchanged — these subagents supplement that
+   process, not replace it.
