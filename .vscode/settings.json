@@ -1,0 +1,18 @@
+{
+  "dotnet.defaultSolution": "Wrak.Clean.Blazor.slnx",
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp",
+    "editor.formatOnSave": true
+  },
+  "[razor]": {
+    "editor.formatOnSave": true
+  },
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true
+  },
+  "search.exclude": {
+    "**/bin": true,
+    "**/obj": true
+  }
+}
