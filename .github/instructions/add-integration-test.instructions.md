@@ -5,6 +5,10 @@ applyTo: "*.IntegrationTests/**/*.cs"
 
 # Add an Integration Test
 
+> Mirrors
+> [.claude/skills/add-integration-test/SKILL.md](../../.claude/skills/add-integration-test/SKILL.md)
+> for Claude Code — same guidance, two platforms. If you change one, change the other.
+
 `IntegrationTests` is for the minority of cases where a mock would hide the real risk: byte-level
 file format correctness, a real database round-trip, timing/concurrency behavior a mock can't
 reproduce. See `docs/04-testing-guide.md`. Most behavior should already be covered by `UnitTests`

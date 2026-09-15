@@ -5,6 +5,11 @@ applyTo: "*.Web/**/*.cs,*.Web/**/*.razor,*.Infrastructure/**/*.cs,*.Core/**/*.cs
 
 # Code Review Standards — Security
 
+> Shared review standard — no `.claude/` counterpart. GitHub Copilot Code Review applies this
+> file automatically via its `applyTo` globs, and the Claude Code reviewer agents in
+> [.claude/agents/](../../.claude/agents/) are pointed at this same file. Edit it here only;
+> don't fork a Claude-side copy.
+
 Severity tags `[Required]`/`[Suggested]` follow the same meaning as in
 `code-review-standards.instructions.md`. Unlike the other layer-specific files, this file's rules
 apply only when the diff actually touches a security-sensitive concern — don't force-fit these

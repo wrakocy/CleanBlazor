@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Independent senior .NET code reviewer for this repo. Use for a *meaningful* implementation change (new/changed use case, handler, component, Infrastructure integration, or cross-cutting wiring) — not for docs-only, single-constant, or compiler-verified rename diffs. Reviews the current diff (or a specified PR/branch) against architecture boundaries, CQRS/validation placement, model/DTO contracts, nullability, async/cancellation, error handling, coupling, duplication, and convention consistency. Review-only — never edits files, commits, or opens PRs.
+description: Independent senior .NET code reviewer for this repo. Use for a *meaningful* implementation change (new/changed use case, handler, component, Infrastructure integration, or cross-cutting wiring) — not for docs-only, single-constant, or compiler-verified rename diffs. Reviews the current diff (or a specified PR/branch) against architecture boundaries, CQRS/validation placement, model/DTO contracts, nullability, async/cancellation, error handling, coupling, duplication, and convention consistency — plus Blazor UI behavior, states, accessibility, and design-system usage when the diff touches the Web project. Review-only — never edits files, commits, or opens PRs.
 tools: [read, search, execute]
 ---
 
@@ -66,6 +66,29 @@ Leave a full test-adequacy pass to `test-reviewer` when it's also reviewing this
 obvious missing-test gap is still worth a brief note). Leave a deep security pass to
 `security-reviewer` when it's also reviewing this change (an obvious security defect is still
 worth a Must Fix).
+
+## Additionally, when the diff touches Blazor UI
+
+Apply this section **only** when the change materially affects UI behavior, layout, interaction,
+accessibility, design-system usage, or implements a supplied design artifact. Skip it entirely for
+a backend-only diff, a label/text swap, or a mechanical markup move.
+
+The "User-facing behavior and accessibility" section of `code-review-web-blazor.instructions.md`
+carries the [Required]/[Suggested] rules; on top of those, judge:
+
+- **States and transitions** — loading, error, and empty states handled the way sibling components
+  handle them, not just the happy path.
+- **Validation presentation** — FluentValidation errors actually surfaced to the user, not
+  silently swallowed.
+- **Accessibility** — label/input association, accessible names on icon-only controls, keyboard
+  operability of custom interactive elements, adequate contrast, focus handling around dialogs.
+- **Responsive behavior** — does a new layout hold up at narrow widths, compared with comparable
+  existing pages.
+- **Design-system usage** — reuse of MudBlazor and this repo's shared components instead of a
+  bespoke reimplementation.
+- **Design-artifact fidelity** — when a Figma/Zeplin artifact or screenshot is supplied, compare
+  against it and name the specific element/state that differs; don't infer a design you weren't
+  given.
 
 ## Review-only
 

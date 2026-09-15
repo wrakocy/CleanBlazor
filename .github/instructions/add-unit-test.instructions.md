@@ -5,6 +5,10 @@ applyTo: "*.UnitTests/**/*.cs"
 
 # Add a Unit Test
 
+> Mirrors
+> [.claude/skills/add-unit-test/SKILL.md](../../.claude/skills/add-unit-test/SKILL.md)
+> for Claude Code — same guidance, two platforms. If you change one, change the other.
+
 All unit tests live in the single `<Product>.UnitTests` project — never create a second,
 per-source-project unit test project — mirroring the namespace of the code under test:
 `Core/<Domain>/...`, `Infrastructure/...`, `Web/...`. See `docs/04-testing-guide.md`.

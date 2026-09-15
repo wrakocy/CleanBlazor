@@ -125,9 +125,8 @@ change actually touches that boundary. Full procedure and reviewer-briefing shap
 
    | Reviewer | Invoke when | Skip when |
    | --- | --- | --- |
-   | `code-reviewer` | Any meaningful implementation change (new/changed use case, handler, component, Infrastructure integration, cross-cutting wiring) | Docs/comment-only edits, a single-constant change, a rename the compiler already verified |
+   | `code-reviewer` | Any meaningful implementation change (new/changed use case, handler, component, Infrastructure integration, cross-cutting wiring). Also covers Blazor UI behavior, states, accessibility, and design-system usage when the diff touches `Web` — brief it with the design artifact if one exists | Docs/comment-only edits, a single-constant change, a rename the compiler already verified |
    | `test-reviewer` | Behavior materially changed, or the change carries real regression risk (new/changed handler, validator, domain event, boundary conversion) | No behavior changed and no tests needed changing |
-   | `ui-reviewer` | Change affects Blazor UI behavior, state transitions, validation presentation, accessibility, responsive layout, MudBlazor usage, or implements a supplied design artifact | Backend-only change; a label/text swap; mechanical markup moves |
    | `security-reviewer` | Change touches auth, authorization, claims/identity, secrets/config, sensitive data, externally supplied input, file upload, crypto, or endpoint exposure | Ordinary CRUD with no security boundary crossed |
 
 6. Address the findings you agree with; each reviewer reports independently and edits nothing

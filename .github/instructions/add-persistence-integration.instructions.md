@@ -5,6 +5,10 @@ applyTo: "*.Infrastructure/**/*.cs"
 
 # Add a Persistence Integration
 
+> Mirrors
+> [.claude/skills/add-persistence-integration/SKILL.md](../../.claude/skills/add-persistence-integration/SKILL.md)
+> for Claude Code — same guidance, two platforms. If you change one, change the other.
+
 Which path applies depends on this solution's persistence model (check `copilot-instructions.md`'s
 "Persistence model" section). A single solution may use both, decided per domain.
 

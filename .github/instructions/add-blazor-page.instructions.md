@@ -5,6 +5,10 @@ applyTo: "*.Web/Components/Pages/**/*.razor,*.Web/Components/Pages/**/*.razor.cs
 
 # Add a Blazor Page or Component
 
+> Mirrors
+> [.claude/skills/add-blazor-page/SKILL.md](../../.claude/skills/add-blazor-page/SKILL.md)
+> for Claude Code — same guidance, two platforms. If you change one, change the other.
+
 Pages live under `Web/Components/Pages/Areas/<Domain>/...`, each as a `.razor` + `.razor.cs`
 code-behind pair. See `docs/03-feature-development-guide.md` §7. Model a search/list page and a
 detail/edit page after any existing pair in this solution once one exists.
