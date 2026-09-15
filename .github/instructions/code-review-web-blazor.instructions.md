@@ -1,5 +1,5 @@
 ---
-description: PR review rules for the Web project — Blazor Server page/component structure, data-access boundaries, shared-component reuse, state-management consistency, and component test coverage. Derived from docs/03-feature-development-guide.md §7 and the add-blazor-page skill. See code-review-standards.instructions.md for repo-wide rules.
+description: PR review rules for the Web project — Blazor Server page/component structure, data-access boundaries, shared-component reuse, state-management consistency, user-facing behavior/accessibility, and component test coverage. Derived from docs/03-feature-development-guide.md §7 and the add-blazor-page skill. See code-review-standards.instructions.md for repo-wide rules.
 applyTo: "*.Web/**/*.razor,*.Web/**/*.cs"
 ---
 
@@ -65,6 +65,36 @@ abstract ideal.
   search pages in the repo use that mechanism. (docs/03-feature-development-guide.md §7)
 - **[Suggested]** Flag a hardcoded breadcrumb, icon, page-size, or input-mask string when an
   equivalent constant already exists in `AppConstants`. (docs/03-feature-development-guide.md §7)
+
+## User-facing behavior and accessibility
+
+These rules are the primary remit of the `ui-reviewer` agent (invoked when a change materially
+affects UI behavior, layout, interaction, accessibility, or design-system usage) but apply
+whenever this file is in scope, including for a general code review of a Blazor change.
+
+- **[Required]** Flag a page/component that performs an async `_appBus` call without visible
+  loading feedback (the `_appState.Working` spinner pattern, or an equivalent already established
+  on comparable pages) — see "State-management consistency" above; this is called out again here
+  because a missing loading state is a user-facing defect, not just a convention slip.
+- **[Required]** Flag a form/page where FluentValidation errors aren't surfaced to the user (no
+  `Blazored.FluentValidation` integration or equivalent field-level message) — a validation rule
+  that exists but is never shown provides no actual protection to the user.
+- **[Required]** Flag a page/component with no handling for an empty result set (a search/list
+  page that renders nothing rather than an explicit "no results" state) or an error from a failed
+  `_appBus` call (silently swallowed instead of a `_snackBarService` notification or equivalent),
+  when comparable existing pages do handle these states.
+- **[Required]** Flag a non-decorative `<img>`/icon-only interactive control with no accessible
+  name (missing `alt`, `aria-label`, or MudBlazor's equivalent prop), and a custom interactive
+  element (a `<div>`/`<span>` with a click handler) that isn't keyboard-operable when a native
+  `MudButton`/`<button>` would have worked.
+- **[Suggested]** Flag a new layout that hard-codes a fixed pixel width or otherwise won't reflow
+  at a narrow viewport, when comparable existing pages use MudBlazor's responsive grid/breakpoint
+  props instead.
+- **[Suggested]** Flag custom (non-MudBlazor-default) text/background color combinations that look
+  low-contrast, or a dialog/modal that doesn't return focus sensibly after it closes.
+- **[Suggested]** When the PR description or task links a design artifact (Figma/Zeplin), flag an
+  implementation that visibly diverges from it (spacing, missing state such as hover/disabled) —
+  the `ui-reviewer` agent should be given the artifact directly rather than asked to infer it.
 
 ## Component test coverage
 

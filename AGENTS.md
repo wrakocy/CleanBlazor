@@ -28,9 +28,16 @@ wired together with dependency injection). See [docs/](docs/) for the full archi
 ## Build & Test
 
 ```bash
+dotnet format Wrak.Clean.Blazor.slnx
+dotnet restore Wrak.Clean.Blazor.slnx
+pwsh ./Verify-Package-Versions.ps1
 dotnet build Wrak.Clean.Blazor.slnx
 dotnet test Wrak.Clean.Blazor.slnx
 ```
+
+While iterating, scope `dotnet test` to one project/class instead of the whole solution. See
+[verify-and-review](.claude/skills/verify-and-review/SKILL.md) for the full pre-PR procedure,
+including when to invoke which specialist reviewer.
 
 ## Project Map
 
@@ -53,6 +60,8 @@ dotnet test Wrak.Clean.Blazor.slnx
 - `add-unit-test` — add a test following this repo's one-class-per-method and Builder conventions.
 - `add-integration-test` — add a real-dependency test in `IntegrationTests`.
 - `add-functional-test` — add a full-stack functional test for a Blazor page.
+- `verify-and-review` — the pre-PR verification ladder and risk-based specialist-reviewer
+  selection; see [PR Workflow](#pr-workflow) below.
 
 ## Load-Bearing Conventions
 
@@ -101,15 +110,31 @@ dotnet test Wrak.Clean.Blazor.slnx
 
 ## PR Workflow
 
-Before opening a PR:
+Default to one primary agent doing the implementation, writing/updating its own tests, and
+running deterministic verification — not a fleet of subagents spawned by habit. Specialist
+reviewers are independent-verification steps at specific risk boundaries, invoked only when the
+change actually touches that boundary. Full procedure and reviewer-briefing shape:
+[verify-and-review](.claude/skills/verify-and-review/SKILL.md).
 
-1. Implementation complete.
-2. Run `dotnet format Wrak.Clean.Blazor.slnx` to apply formatting.
-3. Relevant local checks pass: `dotnet build`, `dotnet test`.
-4. Run the `code-reviewer` subagent against the diff.
-5. Run the `test-reviewer` subagent against the diff.
-6. Review both sets of findings and decide what to address — these subagents report
-   independently of each other and do not modify anything themselves.
-7. Resolve the findings you agree with, then rerun `dotnet format`, `dotnet build`, `dotnet test`.
-8. Open the PR. Existing CI and human review apply unchanged — these subagents supplement that
-   process, not replace it.
+1. Understand the task and the relevant slice of the architecture; inspect only what the task
+   touches.
+2. Implement the change, writing/updating the tests it needs as you go.
+3. Run the [Build & Test](#build--test) ladder above.
+4. Review your own diff (`git diff`) before asking anyone else to.
+5. Invoke only the specialist reviewers this change actually warrants:
+
+   | Reviewer | Invoke when | Skip when |
+   | --- | --- | --- |
+   | `code-reviewer` | Any meaningful implementation change (new/changed use case, handler, component, Infrastructure integration, cross-cutting wiring) | Docs/comment-only edits, a single-constant change, a rename the compiler already verified |
+   | `test-reviewer` | Behavior materially changed, or the change carries real regression risk (new/changed handler, validator, domain event, boundary conversion) | No behavior changed and no tests needed changing |
+   | `ui-reviewer` | Change affects Blazor UI behavior, state transitions, validation presentation, accessibility, responsive layout, MudBlazor usage, or implements a supplied design artifact | Backend-only change; a label/text swap; mechanical markup moves |
+   | `security-reviewer` | Change touches auth, authorization, claims/identity, secrets/config, sensitive data, externally supplied input, file upload, crypto, or endpoint exposure | Ordinary CRUD with no security boundary crossed |
+
+6. Address the findings you agree with; each reviewer reports independently and edits nothing
+   itself.
+7. Re-run only the deterministic checks affected by the fix. Re-invoke a reviewer only if the fix
+   changed the risk area that reviewer examined — not as a matter of course.
+8. Open the PR. Existing CI (`azure-pipelines-*.yml`: restore, `Verify-Package-Versions.ps1`,
+   build, test) and human review apply unchanged — these subagents supplement that process, not
+   replace it. If static/security analysis (e.g. SonarQube, CodeQL) is added to CI later, treat it
+   the same way: CI re-verifies, it doesn't replace the local specialist review.
