@@ -30,12 +30,17 @@ Primary workflow is Visual Studio: open `Wrak.Clean.Blazor.slnx` and hit F6 — 
 already the default startup project and every launch profile runs with
 `ASPNETCORE_ENVIRONMENT=Development` — then run tests from Test Explorer (xUnit + Moq).
 
-From the CLI:
+From the CLI, the full verification ladder (also what CI runs):
 
 ```bash
+dotnet format Wrak.Clean.Blazor.slnx
+dotnet restore Wrak.Clean.Blazor.slnx
+pwsh ./Verify-Package-Versions.ps1
 dotnet build Wrak.Clean.Blazor.slnx
 dotnet test Wrak.Clean.Blazor.slnx
 ```
+
+While iterating, scope `dotnet test` to one project/class instead of the whole solution.
 
 ## Project Map
 
@@ -67,7 +72,8 @@ automatically based on the files being edited:
 - `add-functional-test.instructions.md` — adding a full-stack functional test in
   `Wrak.Clean.Blazor.FunctionalTests`.
 - `code-review-*.instructions.md` — PR review rules for GitHub Copilot Code Review, derived from
-  the same conventions (repo-wide, Core, Infrastructure, Web/Blazor, and Tests).
+  the same conventions (repo-wide, Core, Infrastructure, Web/Blazor, Tests, and Security). The
+  Security file applies only when a change touches an auth/secrets/input-handling boundary.
 
 ## Load-Bearing Conventions
 
@@ -113,6 +119,37 @@ automatically based on the files being edited:
   only, mirroring source namespaces.
 - MUST NOT name a functional test class after its containing folder when it doesn't match the page
   it tests — name it after the page.
+
+## Development & Review Workflow
+
+Default to one primary pass doing the implementation, writing/updating its own tests, and running
+the deterministic verification ladder above — not reviewing every change with every available
+agent by habit. The `.github/agents/*.agent.md` reviewers are independent-verification steps at
+specific risk boundaries, invoked only when a change actually touches that boundary:
+
+1. Understand the task and the relevant slice of the architecture; inspect only what the task
+   touches.
+2. Implement the change, writing/updating the tests it needs as you go.
+3. Run the Build & Test ladder above.
+4. Review your own diff before asking for another review.
+5. Invoke only the reviewers this change actually warrants:
+
+   | Reviewer | Invoke when | Skip when |
+   | --- | --- | --- |
+   | `code-reviewer` | Any meaningful implementation change (new/changed use case, handler, component, Infrastructure integration, cross-cutting wiring) | Docs/comment-only edits, a single-constant change, a compiler-verified rename |
+   | `test-reviewer` | Behavior materially changed, or the change carries real regression risk (new/changed handler, validator, domain event, boundary conversion) | No behavior changed and no tests needed changing |
+   | `ui-reviewer` | Change affects Blazor UI behavior, state transitions, validation presentation, accessibility, responsive layout, MudBlazor usage, or implements a supplied design artifact | Backend-only change; a label/text swap; mechanical markup moves |
+   | `security-reviewer` | Change touches auth, authorization, claims/identity, secrets/config, sensitive data, externally supplied input, file upload, crypto, or endpoint exposure | Ordinary CRUD with no security boundary crossed |
+
+6. Address the findings you agree with; each reviewer reports independently and edits nothing
+   itself.
+7. Re-run only the deterministic checks affected by the fix. Re-invoke a reviewer only if the fix
+   changed the risk area that reviewer examined.
+8. Open the PR. Existing CI (`azure-pipelines-*.yml`: restore, `Verify-Package-Versions.ps1`,
+   build, test) and human review apply unchanged — this workflow supplements that pipeline, it
+   doesn't replace it. This repo's CI does not currently run static/security analysis
+   (no SonarQube/CodeQL step configured); if one is added later, it re-verifies what
+   `security-reviewer` already checked, it doesn't substitute for it.
 
 ## Enabling this file
 

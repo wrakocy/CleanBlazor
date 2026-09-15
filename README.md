@@ -84,6 +84,13 @@ shape of a new CQRS feature, domain event, validator, persistence integration, a
 or just ask your agent to add one; it already knows these conventions via
 [.claude/skills/](.claude/skills/) / [.github/instructions/](.github/instructions/).
 
+Before opening a PR, see AGENTS.md's [PR Workflow](AGENTS.md#pr-workflow) (Claude Code) or
+copilot-instructions.md's [Development & Review Workflow](.github/copilot-instructions.md) —
+one primary implementation pass plus deterministic verification, with the `code-reviewer`,
+`test-reviewer`, `ui-reviewer`, and `security-reviewer` agents invoked only at the risk boundaries
+each one actually applies to. The Claude Code procedure is spelled out in
+[.claude/skills/verify-and-review/](.claude/skills/verify-and-review/).
+
 ## Working on this template itself
 
 Not generating a client solution — extending the template's own defaults (a new base class, a
