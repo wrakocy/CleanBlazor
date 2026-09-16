@@ -7,9 +7,9 @@ public class Typography : WebApplicationTestFixtureBase
     [Fact]
     public async Task ReturnsViewWithCorrectMessage()
     {
-        var rsp = await _client.GetAsync("/typography");
+        var rsp = await _client.GetAsync("/typography", TestContext.Current.CancellationToken);
         rsp.EnsureSuccessStatusCode();
-        var stringRsp = await rsp.Content.ReadAsStringAsync();
+        var stringRsp = await rsp.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         Assert.Contains("Typography", stringRsp);
     }
