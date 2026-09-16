@@ -1,0 +1,10 @@
+﻿@using System.Net;
+@using Wrak.CleanBlazor.Web.Components.Layouts
+@using Wrak.CleanBlazor.Web.Components.Pages;
+@using Wrak.CleanBlazor.Web.Components.Pages.Root.Error;
+
+<Router AppAssembly="typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(Layouts.MainLayout)" />
+    </Found>
+</Router>

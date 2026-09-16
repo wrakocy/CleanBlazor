@@ -1,0 +1,15 @@
+﻿@using Wrak.CleanBlazor.Core.Shared.Interfaces;
+@using Wrak.CleanBlazor.Web.Components.Layouts
+
+<div id="blazor-error-ui">
+    @if (_appEnv.Is(EnvironmentType.Development))
+    {
+        <span>An unhandled exception has occurred. Check your browser's console for details or <a href="/" class="reload">reload</a> now. </span>
+    }
+    else
+    {
+        <span><strong>Whoops!</strong> An error has occurred and the application may no longer respond until you <a href="/" class="reload">reload</a> it. If this problem continues, please contact development. Thank you!</span>
+    }
+
+    <a class="dismiss">🗙</a>
+</div>

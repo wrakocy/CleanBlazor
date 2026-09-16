@@ -6,9 +6,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/Wrak.Clean.Blazor.Web/bin/Debug/net10.0/Wrak.Clean.Blazor.Web.dll",
+      "program": "${workspaceFolder}/Wrak.CleanBlazor.Web/bin/Debug/net10.0/Wrak.CleanBlazor.Web.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/Wrak.Clean.Blazor.Web",
+      "cwd": "${workspaceFolder}/Wrak.CleanBlazor.Web",
       "stopAtEntry": false,
       "serverReadyAction": {
         "action": "openExternally",

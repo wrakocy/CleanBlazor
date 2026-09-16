@@ -1,7 +1,7 @@
 # Using This Repo as a `dotnet new` Template
 
 This repo doubles as an installable `dotnet new` template (`.template.config/template.json`,
-identity `Wrak.Clean.Blazor.Template`, short name `blazor-clean`). Use this path when you
+identity `Wrak.CleanBlazor.Template`, short name `blazor-clean`). Use this path when you
 want a working, buildable solution under your own name in one command, instead of following
 [02-bootstrap-guide.md](02-bootstrap-guide.md) step by step.
 
@@ -40,8 +40,8 @@ dotnet new blazor-clean -n <Company>.<Product> -o <path-to-new-solution>
 ```
 
 - `-n`/`--name` is the **sourceName replacement** — every occurrence of the literal string
-  `Wrak.Clean.Blazor` becomes your `<Company>.<Product>` value, and every file/folder whose
-  name contains `Wrak.Clean.Blazor` is renamed to match (see below).
+  `Wrak.CleanBlazor` becomes your `<Company>.<Product>` value, and every file/folder whose
+  name contains `Wrak.CleanBlazor` is renamed to match (see below).
 - `-o`/`--output` is optional and defaults to the current directory (`preferNameDirectory` is
   `false` in `template.json`) — `dotnet new` does **not** create a `<Company>.<Product>`
   subdirectory on its own. `cd` into (or create) the folder you want the new solution in first,
@@ -74,18 +74,18 @@ left behind.
 `template.json`, which does not scope or limit which files get processed — applies to every file
 in the template except the binary/verbatim types listed in `template.json`'s `copyOnly` modifier
 (`*.dll`, `*.png`, `*.ico`, `*.jpg`, `*.jpeg`, `*.ps1`). In practice that means the
-`Wrak.Clean.Blazor` → `<Company>.<Product>` replacement runs across essentially every text
+`Wrak.CleanBlazor` → `<Company>.<Product>` replacement runs across essentially every text
 file in the repo, including ones you might not expect:
 
 | Renamed automatically | Untouched |
 | --- | --- |
-| Project folder names (`Wrak.Clean.Blazor.Core` → `<Company>.<Product>.Core`, etc.) | `Wrak.Extensions` / `Wrak.RandomData` NuGet package references — these are real published package IDs, not the template's sourceName, so they don't match and are left alone |
+| Project folder names (`Wrak.CleanBlazor.Core` → `<Company>.<Product>.Core`, etc.) | `Wrak.Extensions` / `Wrak.RandomData` NuGet package references — these are real published package IDs, not the template's sourceName, so they don't match and are left alone |
 | `.csproj` / `.slnx` file names and their internal `<ProjectReference>`/`<File Path>` entries | `.template.config/` itself — excluded from `sources.include`, never present in generated output |
-| C# namespaces, `global using` statements, and any other `Wrak.Clean.Blazor` text inside `.cs`, `.razor`, `.yml` files | Anything under `[Bb]in/`, `[Oo]bj/`, `.vs/`, `.git/` — excluded by `sources.exclude` |
-| Every `Wrak.Clean.Blazor` occurrence inside `.md` files too — including `AGENTS.md` and `.github/copilot-instructions.md`'s "this describes the `Wrak.Clean.Blazor` template" comment, project-map table, and `dotnet build`/`dotnet test` command examples | Prose that never contained the literal string in the first place — `README.md`'s current wording is already name-agnostic ("this template", "this solution"), so nothing changes there even though the substitution engine still runs over it |
+| C# namespaces, `global using` statements, and any other `Wrak.CleanBlazor` text inside `.cs`, `.razor`, `.yml` files | Anything under `[Bb]in/`, `[Oo]bj/`, `.vs/`, `.git/` — excluded by `sources.exclude` |
+| Every `Wrak.CleanBlazor` occurrence inside `.md` files too — including `AGENTS.md` and `.github/copilot-instructions.md`'s "this describes the `Wrak.CleanBlazor` template" comment, project-map table, and `dotnet build`/`dotnet test` command examples | Prose that never contained the literal string in the first place — `README.md`'s current wording is already name-agnostic ("this template", "this solution"), so nothing changes there even though the substitution engine still runs over it |
 
 Verify this yourself any time by generating into a scratch folder and diffing against this repo,
-or `grep -r Wrak.Clean.Blazor <generated-folder>` — a clean generation returns no matches.
+or `grep -r Wrak.CleanBlazor <generated-folder>` — a clean generation returns no matches.
 
 ## What still needs manual editing
 
@@ -115,7 +115,7 @@ generating, still do this by hand — the HTML comments already sitting in `AGEN
 
 ```bash
 dotnet new uninstall .          # from the clone, or:
-dotnet new uninstall Wrak.Clean.Blazor.Template   # by identity, from anywhere
+dotnet new uninstall Wrak.CleanBlazor.Template   # by identity, from anywhere
 ```
 
 Because the install is a live path reference (see above), there is no separate "update" step for

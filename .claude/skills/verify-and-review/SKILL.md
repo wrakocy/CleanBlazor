@@ -14,15 +14,15 @@ reviewers are invoked deliberately, at real risk boundaries, instead of by defau
 Run these yourself; none of them need an LLM:
 
 ```bash
-dotnet format Wrak.Clean.Blazor.slnx
-dotnet restore Wrak.Clean.Blazor.slnx
+dotnet format Wrak.CleanBlazor.slnx
+dotnet restore Wrak.CleanBlazor.slnx
 pwsh ./Verify-Package-Versions.ps1
-dotnet build Wrak.Clean.Blazor.slnx
-dotnet test Wrak.Clean.Blazor.slnx
+dotnet build Wrak.CleanBlazor.slnx
+dotnet test Wrak.CleanBlazor.slnx
 ```
 
 - While iterating, scope `dotnet test` to the project or class you're touching
-  (`dotnet test Wrak.Clean.Blazor.UnitTests --filter ...`) rather than the whole solution; run the
+  (`dotnet test Wrak.CleanBlazor.UnitTests --filter ...`) rather than the whole solution; run the
   full solution-wide `dotnet test` once before opening the PR.
 - `Verify-Package-Versions.ps1` enforces the pinned `MediatR` 12.x version — CI runs it too, so
   catching a violation locally saves a CI round-trip.

@@ -5,7 +5,7 @@
       "label": "build",
       "command": "dotnet",
       "type": "process",
-      "args": ["build", "${workspaceFolder}/Wrak.Clean.Blazor.slnx"],
+      "args": ["build", "${workspaceFolder}/Wrak.CleanBlazor.slnx"],
       "problemMatcher": "$msCompile",
       "group": { "kind": "build", "isDefault": true }
     },
@@ -13,7 +13,7 @@
       "label": "test",
       "command": "dotnet",
       "type": "process",
-      "args": ["test", "${workspaceFolder}/Wrak.Clean.Blazor.slnx"],
+      "args": ["test", "${workspaceFolder}/Wrak.CleanBlazor.slnx"],
       "problemMatcher": "$msCompile",
       "group": { "kind": "test", "isDefault": true }
     },
@@ -25,7 +25,7 @@
         "watch",
         "run",
         "--project",
-        "${workspaceFolder}/Wrak.Clean.Blazor.Web/Wrak.Clean.Blazor.Web.csproj"
+        "${workspaceFolder}/Wrak.CleanBlazor.Web/Wrak.CleanBlazor.Web.csproj"
       ],
       "problemMatcher": "$msCompile",
       "isBackground": true

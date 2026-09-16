@@ -1,4 +1,4 @@
-# Wrak.Clean.Blazor
+# Wrak.CleanBlazor
 
 A template for spinning up new Blazor Server / Clean Architecture solutions: CQRS via MediatR, FluentValidation, and a Blazor Server UI (MudBlazor), wired together
 with dependency injection. This repo has no business domain of its own — it exists to be
@@ -104,8 +104,8 @@ default startup project (`DefaultStartup="true"` in the `.slnx`) and every launc
 needed. Or from the CLI:
 
 ```bash
-dotnet build Wrak.Clean.Blazor.slnx
-dotnet test Wrak.Clean.Blazor.slnx
+dotnet build Wrak.CleanBlazor.slnx
+dotnet test Wrak.CleanBlazor.slnx
 ```
 
 ## Further reading

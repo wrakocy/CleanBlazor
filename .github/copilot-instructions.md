@@ -1,10 +1,10 @@
 # Copilot Instructions
 
-<!-- This describes the Wrak.Clean.Blazor template itself. If you generated a new solution
+<!-- This describes the Wrak.CleanBlazor template itself. If you generated a new solution
      from it via `dotnet new blazor-clean -n <Company>.<Product>`, update the name/description
      below (and AGENTS.md to match) and check the persistence-model box once decided. -->
 
-Wrak.Clean.Blazor is a Blazor Server application (.NET 10) — a starting point for a new
+Wrak.CleanBlazor is a Blazor Server application (.NET 10) — a starting point for a new
 Clean Architecture solution, with no business domain of its own yet. It is built on Clean
 Architecture: `Core` (CQRS use cases via MediatR, models, validators) is depended on by
 `Infrastructure` (repositories and/or external API clients) and `Web` (the Blazor Server UI,
@@ -26,18 +26,18 @@ wired together with dependency injection). See `docs/` for the full architecture
 
 ## Build & Test
 
-Primary workflow is Visual Studio: open `Wrak.Clean.Blazor.slnx` and hit F6 — `Web` is
+Primary workflow is Visual Studio: open `Wrak.CleanBlazor.slnx` and hit F6 — `Web` is
 already the default startup project and every launch profile runs with
 `ASPNETCORE_ENVIRONMENT=Development` — then run tests from Test Explorer (xUnit + Moq).
 
 From the CLI, the full verification ladder (also what CI runs):
 
 ```bash
-dotnet format Wrak.Clean.Blazor.slnx
-dotnet restore Wrak.Clean.Blazor.slnx
+dotnet format Wrak.CleanBlazor.slnx
+dotnet restore Wrak.CleanBlazor.slnx
 pwsh ./Verify-Package-Versions.ps1
-dotnet build Wrak.Clean.Blazor.slnx
-dotnet test Wrak.Clean.Blazor.slnx
+dotnet build Wrak.CleanBlazor.slnx
+dotnet test Wrak.CleanBlazor.slnx
 ```
 
 While iterating, scope `dotnet test` to one project/class instead of the whole solution.
@@ -46,11 +46,11 @@ While iterating, scope `dotnet test` to one project/class instead of the whole s
 
 | Path | Purpose |
 | --- | --- |
-| `Wrak.Clean.Blazor.Core` | Use cases (Commands/Queries/Handlers), domain events, models, validators, interfaces. No dependency on Infrastructure or Web. |
-| `Wrak.Clean.Blazor.Infrastructure` | Implementations of Core interfaces: repositories and/or external API clients, `AppBus`, cross-cutting filters. |
-| `Wrak.Clean.Blazor.Web` | The ASP.NET Core host and Blazor Server UI (MudBlazor). All DI wiring lives in `Extensions/DependencyInjectionExtensions.cs`, called from `Program.cs`. |
-| `Wrak.Clean.Blazor.UnitTests` | xUnit/Moq tests for Core, Infrastructure, and Web, mirroring their namespaces, plus shared test-data `Builders/`. |
-| `Wrak.Clean.Blazor.IntegrationTests` / `Wrak.Clean.Blazor.FunctionalTests` | Integration tests (real dependencies) and full-stack functional tests (`WebApplicationFactory`). |
+| `Wrak.CleanBlazor.Core` | Use cases (Commands/Queries/Handlers), domain events, models, validators, interfaces. No dependency on Infrastructure or Web. |
+| `Wrak.CleanBlazor.Infrastructure` | Implementations of Core interfaces: repositories and/or external API clients, `AppBus`, cross-cutting filters. |
+| `Wrak.CleanBlazor.Web` | The ASP.NET Core host and Blazor Server UI (MudBlazor). All DI wiring lives in `Extensions/DependencyInjectionExtensions.cs`, called from `Program.cs`. |
+| `Wrak.CleanBlazor.UnitTests` | xUnit/Moq tests for Core, Infrastructure, and Web, mirroring their namespaces, plus shared test-data `Builders/`. |
+| `Wrak.CleanBlazor.IntegrationTests` / `Wrak.CleanBlazor.FunctionalTests` | Integration tests (real dependencies) and full-stack functional tests (`WebApplicationFactory`). |
 
 ## Task-Specific Guidance
 
@@ -66,11 +66,11 @@ automatically based on the files being edited:
   API integration to Infrastructure.
 - `add-blazor-page.instructions.md` — adding a Blazor page/component under
   `Components/Pages/Areas`.
-- `add-unit-test.instructions.md` — adding a test in `Wrak.Clean.Blazor.UnitTests`.
+- `add-unit-test.instructions.md` — adding a test in `Wrak.CleanBlazor.UnitTests`.
 - `add-integration-test.instructions.md` — adding a real-dependency test in
-  `Wrak.Clean.Blazor.IntegrationTests`.
+  `Wrak.CleanBlazor.IntegrationTests`.
 - `add-functional-test.instructions.md` — adding a full-stack functional test in
-  `Wrak.Clean.Blazor.FunctionalTests`.
+  `Wrak.CleanBlazor.FunctionalTests`.
 - `code-review-*.instructions.md` — PR review rules for GitHub Copilot Code Review, derived from
   the same conventions (repo-wide, Core, Infrastructure, Web/Blazor, Tests, and Security). The
   Security file applies only when a change touches an auth/secrets/input-handling boundary.

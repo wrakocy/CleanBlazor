@@ -1,5 +1,5 @@
 {
-  "dotnet.defaultSolution": "Wrak.Clean.Blazor.slnx",
+  "dotnet.defaultSolution": "Wrak.CleanBlazor.slnx",
   "[csharp]": {
     "editor.defaultFormatter": "ms-dotnettools.csharp",
     "editor.formatOnSave": true

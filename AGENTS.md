@@ -1,11 +1,11 @@
 # AGENTS.md
 
-<!-- This describes the Wrak.Clean.Blazor template itself. If you generated a new solution
+<!-- This describes the Wrak.CleanBlazor template itself. If you generated a new solution
      from it via `dotnet new blazor-clean -n <Company>.<Product>`, update the name/description
      below (and copilot-instructions.md to match) and check the persistence-model box once
      decided. -->
 
-Wrak.Clean.Blazor is a Blazor Server application (.NET 10) — a starting point for a new
+Wrak.CleanBlazor is a Blazor Server application (.NET 10) — a starting point for a new
 Clean Architecture solution, with no business domain of its own yet. It is built on Clean
 Architecture: `Core` (CQRS use cases via MediatR, models, validators) is depended on by
 `Infrastructure` (repositories and/or external API clients) and `Web` (the Blazor Server UI,
@@ -28,11 +28,11 @@ wired together with dependency injection). See [docs/](docs/) for the full archi
 ## Build & Test
 
 ```bash
-dotnet format Wrak.Clean.Blazor.slnx
-dotnet restore Wrak.Clean.Blazor.slnx
+dotnet format Wrak.CleanBlazor.slnx
+dotnet restore Wrak.CleanBlazor.slnx
 pwsh ./Verify-Package-Versions.ps1
-dotnet build Wrak.Clean.Blazor.slnx
-dotnet test Wrak.Clean.Blazor.slnx
+dotnet build Wrak.CleanBlazor.slnx
+dotnet test Wrak.CleanBlazor.slnx
 ```
 
 While iterating, scope `dotnet test` to one project/class instead of the whole solution. See
@@ -43,11 +43,11 @@ including when to invoke which specialist reviewer.
 
 | Path | Purpose |
 | --- | --- |
-| `Wrak.Clean.Blazor.Core` | Use cases (Commands/Queries/Handlers), domain events, models, validators, interfaces. No dependency on Infrastructure or Web. |
-| `Wrak.Clean.Blazor.Infrastructure` | Implementations of Core interfaces: repositories and/or external API clients, `AppBus`, cross-cutting filters. |
-| `Wrak.Clean.Blazor.Web` | The ASP.NET Core host and Blazor Server UI (MudBlazor). All DI wiring lives in `Extensions/DependencyInjectionExtensions.cs`, called from `Program.cs`. |
-| `Wrak.Clean.Blazor.UnitTests` | xUnit/Moq tests for Core, Infrastructure, and Web, mirroring their namespaces, plus shared test-data `Builders/`. |
-| `Wrak.Clean.Blazor.IntegrationTests` / `Wrak.Clean.Blazor.FunctionalTests` | Integration tests (real dependencies) and full-stack functional tests (`WebApplicationFactory`). |
+| `Wrak.CleanBlazor.Core` | Use cases (Commands/Queries/Handlers), domain events, models, validators, interfaces. No dependency on Infrastructure or Web. |
+| `Wrak.CleanBlazor.Infrastructure` | Implementations of Core interfaces: repositories and/or external API clients, `AppBus`, cross-cutting filters. |
+| `Wrak.CleanBlazor.Web` | The ASP.NET Core host and Blazor Server UI (MudBlazor). All DI wiring lives in `Extensions/DependencyInjectionExtensions.cs`, called from `Program.cs`. |
+| `Wrak.CleanBlazor.UnitTests` | xUnit/Moq tests for Core, Infrastructure, and Web, mirroring their namespaces, plus shared test-data `Builders/`. |
+| `Wrak.CleanBlazor.IntegrationTests` / `Wrak.CleanBlazor.FunctionalTests` | Integration tests (real dependencies) and full-stack functional tests (`WebApplicationFactory`). |
 
 ## Available Skills
 
