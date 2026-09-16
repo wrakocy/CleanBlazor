@@ -7,9 +7,9 @@ public class Health : WebApplicationTestFixtureBase
     [Fact]
     public async Task ReturnsViewWithCorrectMessage()
     {
-        var rsp = await _client.GetAsync("/health");
+        var rsp = await _client.GetAsync("/health", TestContext.Current.CancellationToken);
         rsp.EnsureSuccessStatusCode();
-        var stringRsp = await rsp.Content.ReadAsStringAsync();
+        var stringRsp = await rsp.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         Assert.Contains("Healthy", stringRsp);
     }

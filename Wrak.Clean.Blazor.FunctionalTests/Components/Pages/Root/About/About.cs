@@ -7,9 +7,9 @@ public class About : WebApplicationTestFixtureBase
     [Fact]
     public async Task ReturnsViewWithCorrectMessage()
     {
-        var rsp = await _client.GetAsync("/about");
+        var rsp = await _client.GetAsync("/about", TestContext.Current.CancellationToken);
         rsp.EnsureSuccessStatusCode();
-        var stringRsp = await rsp.Content.ReadAsStringAsync();
+        var stringRsp = await rsp.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         Assert.Contains("About", stringRsp);
     }

@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using Ardalis.ListStartupServices;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using FluentValidation;
