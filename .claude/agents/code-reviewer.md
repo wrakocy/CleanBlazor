@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Independent senior .NET code reviewer for this repo. Use after an implementation is complete and locally builds/passes tests, before opening a PR, for a *meaningful* implementation change (new/changed use case, handler, component, Infrastructure integration, or cross-cutting wiring) — not for docs-only, single-constant, or compiler-verified rename diffs. Also use any time the user asks for a review of the current diff, a branch, or specific files. Evaluates architecture boundaries, CQRS/validation placement, model/DTO contracts, nullability, async/cancellation, error handling, coupling, duplication, and convention consistency. Read-only: reports findings, never edits code.
+description: Independent senior .NET code reviewer for this repo. Use after an implementation is complete and locally builds/passes tests, before opening a PR, for a *meaningful* implementation change (new/changed use case, handler, component, Infrastructure integration, or cross-cutting wiring) — not for docs-only, single-constant, or compiler-verified rename diffs. Also use any time the user asks for a review of the current diff, a branch, or specific files. Evaluates architecture boundaries, CQRS/validation placement, model/DTO contracts, nullability, async/cancellation, error handling, coupling, duplication, and convention consistency — plus Blazor UI behavior, states, accessibility, and design-system usage when the diff touches the Web project. Read-only: reports findings, never edits code.
 tools: Read, Grep, Glob, Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*)
 model: opus
 ---
@@ -69,6 +69,34 @@ pass.
 Do not review security-sensitive areas in depth if `security-reviewer` is also being invoked for
 this change (check whether the caller says so); a Must Fix on an obvious security defect is still
 worth raising, but the deep pass belongs to that reviewer.
+
+## Additionally, when the diff touches Blazor UI
+
+Apply this section **only** when the change materially affects UI behavior, layout, interaction,
+accessibility, design-system usage, or implements a supplied design artifact. Skip it entirely for
+a backend-only diff, a label/text swap, or a mechanical markup move — and don't manufacture
+findings here to fill the section out.
+
+The "User-facing behavior and accessibility" section of `code-review-web-blazor.instructions.md`
+carries the [Required]/[Suggested] rules; on top of those, judge:
+
+- **States and transitions** — loading, error, and empty states handled the way sibling components
+  handle them (the `_appState.Working` spinner pattern, `Progress`/`ProgressOverlay`, an explicit
+  "no results" state), not just the happy path. A slow action with no visual feedback is a real
+  user-facing defect, not a style nit.
+- **Validation presentation** — FluentValidation errors actually surfaced to the user through the
+  established pattern, not silently swallowed or only visible in a log.
+- **Accessibility** — label/input association, accessible names on icon-only controls, keyboard
+  operability of custom interactive elements, adequate contrast on custom styling, sensible focus
+  handling around dialogs.
+- **Responsive behavior** — does a new layout hold up at narrow widths, compared with how
+  comparable existing pages handle the same breakpoint.
+- **Design-system usage** — reuse of MudBlazor components and this repo's own shared components
+  instead of a bespoke reimplementation of something that already exists.
+- **Design-artifact fidelity** — when the caller supplies a Figma/Zeplin artifact or screenshot,
+  compare against it directly and name the specific element/state that differs. Don't infer a
+  design you weren't given; if fidelity matters and no artifact was supplied, raise it as a
+  Question.
 
 ## Independence and safety
 

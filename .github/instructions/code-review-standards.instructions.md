@@ -5,6 +5,11 @@ applyTo: "*.Core/**/*.cs,*.Infrastructure/**/*.cs,*.Web/**/*.cs,*.Web/**/*.razor
 
 # Code Review Standards — Repository-Wide
 
+> Shared review standard — no `.claude/` counterpart. GitHub Copilot Code Review applies this
+> file automatically via its `applyTo` globs, and the Claude Code reviewer agents in
+> [.claude/agents/](../../.claude/agents/) are pointed at this same file. Edit it here only;
+> don't fork a Claude-side copy.
+
 These rules are derived directly from this repo's `AGENTS.md` and `docs/` playbook — they are not
 independent style preferences. Two severity tiers are used throughout this file and its siblings:
 

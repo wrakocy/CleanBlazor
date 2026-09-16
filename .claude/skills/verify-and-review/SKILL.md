@@ -1,6 +1,6 @@
 ---
 name: verify-and-review
-description: The pre-PR procedure for this repo — deterministic verification ladder, self-diff review, and which specialist reviewer (code/test/UI/security) to invoke for a given change. Use once an implementation (and its tests) are locally complete, before opening a PR.
+description: The pre-PR procedure for this repo — deterministic verification ladder, self-diff review, and which specialist reviewer (code, test, security) to invoke for a given change. Use once an implementation (and its tests) are locally complete, before opening a PR.
 ---
 
 # Verify and Review
@@ -46,16 +46,22 @@ tradeoff this skill exists to avoid.
 | --- | --- | --- |
 | `code-reviewer` | A new/changed use case, handler, component, Infrastructure integration, or cross-cutting wiring — any change where a correctness or architecture-boundary mistake is plausible | Docs/comment-only edits, a single-constant change, a rename already verified by the compiler |
 | `test-reviewer` | Behavior materially changed, or the change carries real regression risk (new/changed handler, validator, domain event, boundary conversion) | No behavior changed and no tests needed changing |
-| `ui-reviewer` | Blazor UI behavior, state transitions, validation presentation, accessibility, responsive layout, MudBlazor/design-system usage, or an implementation against a supplied design artifact | Backend-only change; a label/text swap; mechanical markup moves with no behavior change |
 | `security-reviewer` | Auth, authorization, claims/identity, secrets/security-sensitive config, sensitive data, externally supplied input, file upload, cryptography, or endpoint/permission exposure | Ordinary CRUD with no security boundary crossed |
 
-A single change can warrant more than one reviewer (e.g., a new authenticated Blazor page touching
-both `ui-reviewer` and `security-reviewer`). It's also normal for a change to warrant none of them
-(a pure refactor with full test coverage and no behavior change might only need step 1–2 above).
+**UI review is part of `code-reviewer`, not a separate agent.** When the diff touches Blazor UI
+behavior, states, validation presentation, accessibility, responsive layout, or design-system
+usage, `code-reviewer` applies its "when the diff touches Blazor UI" section — so say so in the
+briefing, and attach any design artifact (Figma/Zeplin link, screenshot) it should compare
+against. A second agent re-reading the same diff for the UI slice would duplicate most of the
+first one's context for little added independence.
+
+A single change can warrant more than one reviewer (e.g., a new authenticated Blazor page warrants
+`code-reviewer` — with the UI section in play — plus `security-reviewer`). It's also normal for a
+change to warrant none of them (a pure refactor with full test coverage and no behavior change
+might only need steps 1–2 above).
 
 `code-reviewer` and `test-reviewer` are the common case for any non-trivial implementation change;
-`ui-reviewer` and `security-reviewer` are boundary-specific and should be the exception, not the
-default.
+`security-reviewer` is boundary-specific and should be the exception, not the default.
 
 ## 4. Brief the reviewer — don't hand it the repo
 

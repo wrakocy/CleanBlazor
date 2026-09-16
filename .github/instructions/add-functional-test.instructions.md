@@ -5,6 +5,10 @@ applyTo: "*.FunctionalTests/**/*.cs"
 
 # Add a Functional Test
 
+> Mirrors
+> [.claude/skills/add-functional-test/SKILL.md](../../.claude/skills/add-functional-test/SKILL.md)
+> for Claude Code — same guidance, two platforms. If you change one, change the other.
+
 Functional tests in `FunctionalTests` boot the whole app via `WebApplicationFactory`
 (`CustomWebApplicationFactory`), with every external boundary (API clients, repositories, storage,
 email/SMS) replaced by a mock, and issue real HTTP `GET` requests against page routes. Unlike unit

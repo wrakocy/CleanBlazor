@@ -27,6 +27,7 @@
   <Folder Name="/tests/">
     <Project Path="Wrak.Clean.Blazor.FunctionalTests/Wrak.Clean.Blazor.FunctionalTests.csproj" />
     <Project Path="Wrak.Clean.Blazor.IntegrationTests/Wrak.Clean.Blazor.IntegrationTests.csproj" />
+    <Project Path="Wrak.Clean.Blazor.TestSupport/Wrak.Clean.Blazor.TestSupport.csproj" Id="49f7c000-a91e-40cb-87ce-d4ff9493b4bb" />
     <Project Path="Wrak.Clean.Blazor.UnitTests/Wrak.Clean.Blazor.UnitTests.csproj" />
   </Folder>
 </Solution>

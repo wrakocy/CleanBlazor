@@ -5,6 +5,11 @@ applyTo: "*.Infrastructure/**/*.cs"
 
 # Code Review Standards — Infrastructure
 
+> Shared review standard — no `.claude/` counterpart. GitHub Copilot Code Review applies this
+> file automatically via its `applyTo` globs, and the Claude Code reviewer agents in
+> [.claude/agents/](../../.claude/agents/) are pointed at this same file. Edit it here only;
+> don't fork a Claude-side copy.
+
 Severity tags `[Required]`/`[Suggested]` follow the same meaning as in
 `code-review-standards.instructions.md`. Which sub-rules apply depends on this solution's
 persistence model (declared in `AGENTS.md`/`copilot-instructions.md`'s "Persistence model"

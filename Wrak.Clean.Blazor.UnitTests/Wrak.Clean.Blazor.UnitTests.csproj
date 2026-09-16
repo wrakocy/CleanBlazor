@@ -12,10 +12,11 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
     <PackageReference Include="Moq" />
     <PackageReference Include="System.Security.Cryptography.Xml" />
     <PackageReference Include="Wrak.RandomData" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -23,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Wrak.Clean.Blazor.Web\Wrak.Clean.Blazor.Web.csproj" />
+    <ProjectReference Include="..\Wrak.Clean.Blazor.TestSupport\Wrak.Clean.Blazor.TestSupport.csproj" />
   </ItemGroup>
 
   <ItemGroup>

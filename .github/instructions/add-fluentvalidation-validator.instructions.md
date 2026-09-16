@@ -5,6 +5,10 @@ applyTo: "*.Core/**/Models/**/*Validator.cs"
 
 # Add a FluentValidation Validator
 
+> Mirrors
+> [.claude/skills/add-fluentvalidation-validator/SKILL.md](../../.claude/skills/add-fluentvalidation-validator/SKILL.md)
+> for Claude Code — same guidance, two platforms. If you change one, change the other.
+
 Validators live alongside their model, e.g. `Core/Orders/Models/Order/OrderModelValidator.cs`. See
 `docs/03-feature-development-guide.md` §5.
 

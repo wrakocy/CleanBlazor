@@ -5,6 +5,10 @@ applyTo: "*.Core/**/Events/**/*.cs"
 
 # Add a Domain Event
 
+> Mirrors
+> [.claude/skills/add-domain-event/SKILL.md](../../.claude/skills/add-domain-event/SKILL.md)
+> for Claude Code — same guidance, two platforms. If you change one, change the other.
+
 Events decouple "something changed" from "who needs to react." See
 `docs/03-feature-development-guide.md` §4 for a full generic example.
 

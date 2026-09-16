@@ -5,6 +5,10 @@ applyTo: "*.Core/**/Features/**/*.cs"
 
 # Add a CQRS Feature
 
+> Mirrors
+> [.claude/skills/add-cqrs-feature/SKILL.md](../../.claude/skills/add-cqrs-feature/SKILL.md)
+> for Claude Code — same guidance, two platforms. If you change one, change the other.
+
 Features live under `Core/<Domain>/Features/<UseCaseName>/`, one folder per use case, each with a
 request type and a handler. See `docs/03-feature-development-guide.md` §2–3 for full generic
 examples.

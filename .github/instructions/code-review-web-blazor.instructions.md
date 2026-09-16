@@ -5,6 +5,11 @@ applyTo: "*.Web/**/*.razor,*.Web/**/*.cs"
 
 # Code Review Standards — Web / Blazor
 
+> Shared review standard — no `.claude/` counterpart. GitHub Copilot Code Review applies this
+> file automatically via its `applyTo` globs, and the Claude Code reviewer agents in
+> [.claude/agents/](../../.claude/agents/) are pointed at this same file. Edit it here only;
+> don't fork a Claude-side copy.
+
 Severity tags `[Required]`/`[Suggested]` follow the same meaning as in
 `code-review-standards.instructions.md`. For all "compare to neighboring/sibling" rules below,
 check the nearest existing page/component of the same kind (search page, detail page, shared
@@ -68,9 +73,10 @@ abstract ideal.
 
 ## User-facing behavior and accessibility
 
-These rules are the primary remit of the `ui-reviewer` agent (invoked when a change materially
-affects UI behavior, layout, interaction, accessibility, or design-system usage) but apply
-whenever this file is in scope, including for a general code review of a Blazor change.
+These rules are applied by the `code-reviewer` agent's "when the diff touches Blazor UI" section —
+in play whenever a change materially affects UI behavior, layout, interaction, accessibility, or
+design-system usage — and by Copilot Code Review whenever this file's `applyTo` globs match.
+There is no separate UI-review agent; UI review is a conditional part of the code review.
 
 - **[Required]** Flag a page/component that performs an async `_appBus` call without visible
   loading feedback (the `_appState.Working` spinner pattern, or an equivalent already established
@@ -94,7 +100,7 @@ whenever this file is in scope, including for a general code review of a Blazor 
   low-contrast, or a dialog/modal that doesn't return focus sensibly after it closes.
 - **[Suggested]** When the PR description or task links a design artifact (Figma/Zeplin), flag an
   implementation that visibly diverges from it (spacing, missing state such as hover/disabled) —
-  the `ui-reviewer` agent should be given the artifact directly rather than asked to infer it.
+  the reviewer should be given the artifact directly rather than asked to infer it.
 
 ## Component test coverage
 

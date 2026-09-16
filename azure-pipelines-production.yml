@@ -87,7 +87,7 @@ stages:
         command: 'test'
         projects: '**/*Tests.csproj'
         publishTestResults: true
-        arguments: '--configuration $(build.configuration) --no-build'
+        arguments: '--configuration $(build.configuration) --no-build --report-trx --results-directory $(Agent.TempDirectory)'
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish Blazor Server App'
