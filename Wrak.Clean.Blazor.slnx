@@ -12,6 +12,7 @@
   </Folder>
   <Folder Name="/.docs/">
     <File Path="DomainEvents.png" />
+    <File Path="global.json" />
     <File Path="README.md" />
     <File Path="SolutionStructure.png" />
   </Folder>
