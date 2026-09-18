@@ -100,6 +100,10 @@ jobs:
       - name: Publish Test Results
         uses: dorny/test-reporter@v1
         if: success() || failure()
+        # dorny/test-reporter's trx parser throws on a .trx with 0 or 1 UnitTest entries
+        # (e.g. an as-yet-empty test project in this template) — annotation only, so
+        # don't let a parser bug fail the run; the "Run Tests" step above is the real gate.
+        continue-on-error: true
         with:
           name: Test Results
           path: '${{ runner.temp }}/TestResults/*.trx'
