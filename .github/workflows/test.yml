@@ -32,17 +32,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Azure Login (OIDC)
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Pull Secrets from Azure Key Vault
-        uses: azure/cli@v2
+        uses: azure/cli@v3
         with:
           inlineScript: |
             # TODO: replace with the real Test Key Vault name
@@ -54,7 +54,7 @@ jobs:
             done
 
       - name: Replace Test Config Tokens
-        uses: qetza/replacetokens-action@v1
+        uses: qetza/replacetokens-action@v2
         with:
           sources: '**/appsettings.IntegrationTests.json'
           token-prefix: '#{'
@@ -62,7 +62,7 @@ jobs:
           missing-var-log: warn
 
       - name: Replace App Config Tokens
-        uses: qetza/replacetokens-action@v1
+        uses: qetza/replacetokens-action@v2
         with:
           sources: '**/appsettings.Test.json'
           token-prefix: '#{'
@@ -75,7 +75,7 @@ jobs:
           Set-Content -Path ./Wrak.CleanBlazor.Web/BuildInfo.cs -Value "namespace Wrak.CleanBlazor.Web; public static class BuildInfo { public const string Build = ""${{ github.run_number }}""; }"
 
       - name: Use .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
 
@@ -98,7 +98,7 @@ jobs:
           --results-directory ${{ runner.temp }}/TestResults
 
       - name: Publish Test Results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3
         if: success() || failure()
         # dorny/test-reporter's trx parser throws on a .trx with 0 or 1 UnitTest entries
         # (e.g. an as-yet-empty test project in this template) — annotation only, so
@@ -116,7 +116,7 @@ jobs:
           --output ${{ github.workspace }}/publish
 
       - name: Publish Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: drop
           path: ${{ github.workspace }}/publish
@@ -130,13 +130,13 @@ jobs:
       contents: read
     steps:
       - name: Download Artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: drop
           path: drop
 
       - name: Azure Login (OIDC)
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
