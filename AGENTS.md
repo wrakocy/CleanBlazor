@@ -116,6 +116,13 @@ reviewers are independent-verification steps at specific risk boundaries, invoke
 change actually touches that boundary. Full procedure and reviewer-briefing shape:
 [verify-and-review](.claude/skills/verify-and-review/SKILL.md).
 
+**Never `git commit`, `git push`, or create/update a pull request without the user's explicit,
+in-the-moment confirmation of that specific action.** Implementing, testing, and locally
+reviewing a change never implies permission to commit or push it — ask, state what you're about
+to commit/push (files or a summary) and to which branch/remote, and wait for a clear yes. This
+applies to every agent working in this repo (primary and specialist alike) and cannot be
+satisfied by an earlier, more general approval.
+
 1. Understand the task and the relevant slice of the architecture; inspect only what the task
    touches.
 2. Implement the change, writing/updating the tests it needs as you go.
@@ -133,7 +140,9 @@ change actually touches that boundary. Full procedure and reviewer-briefing shap
    itself.
 7. Re-run only the deterministic checks affected by the fix. Re-invoke a reviewer only if the fix
    changed the risk area that reviewer examined — not as a matter of course.
-8. Open the PR. Existing CI (`azure-pipelines-*.yml`: restore, `Verify-Package-Versions.ps1`,
-   build, test) and human review apply unchanged — these subagents supplement that process, not
-   replace it. If static/security analysis (e.g. SonarQube, CodeQL) is added to CI later, treat it
-   the same way: CI re-verifies, it doesn't replace the local specialist review.
+8. Ask the user to confirm before committing, then again before pushing, then again before opening
+   the PR — each is its own explicit confirmation, not implied by the previous one. Once opened,
+   existing CI (`azure-pipelines-*.yml`: restore, `Verify-Package-Versions.ps1`, build, test) and
+   human review apply unchanged — these subagents supplement that process, not replace it. If
+   static/security analysis (e.g. SonarQube, CodeQL) is added to CI later, treat it the same way:
+   CI re-verifies, it doesn't replace the local specialist review.

@@ -88,10 +88,16 @@ documented — that's wasted context on both sides.
   follow-up fix (renaming a variable the reviewer flagged, adding one missing test) doesn't need a
   fresh full review pass.
 
-## 6. Open the PR
+## 6. Commit, push, and open the PR — each needs explicit confirmation
 
-CI (`azure-pipelines-*.yml`: restore, `Verify-Package-Versions.ps1`, build, test) and human review
-apply unchanged — this skill's local verification and specialist reviews supplement that
-pipeline, they don't replace it. This repo's CI does not currently run static/security analysis
-(no SonarQube/CodeQL step configured); if one is added later, it re-verifies what the local
-`security-reviewer` pass already checked, it doesn't substitute for it.
+Never run `git commit`, `git push`, or create/update a pull request without asking the user first
+and getting a clear yes — for that specific action, in the moment. Finishing implementation,
+tests, and review does not imply permission to commit or push it. Ask before committing, ask again
+before pushing, ask again before opening the PR; state what you're about to do (files/summary,
+branch/remote) each time.
+
+Once the PR is open, CI (`azure-pipelines-*.yml`: restore, `Verify-Package-Versions.ps1`, build,
+test) and human review apply unchanged — this skill's local verification and specialist reviews
+supplement that pipeline, they don't replace it. This repo's CI does not currently run
+static/security analysis (no SonarQube/CodeQL step configured); if one is added later, it
+re-verifies what the local `security-reviewer` pass already checked, it doesn't substitute for it.
