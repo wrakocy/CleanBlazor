@@ -183,9 +183,7 @@ public static class DependencyInjectionExtensions
     {
         var services = builder.Services;
 
-        // needed to allow Blazor ciruit-scoped services to
-        // access services scoped to the circuit
-        services.AddCircuitServicesAccessor();
+        // TODO: Register any infrastructure services here
     }
 
     public static void AddWebServices(this WebApplicationBuilder builder)
