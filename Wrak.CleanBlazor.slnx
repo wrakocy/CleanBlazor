@@ -1,9 +1,4 @@
 <Solution>
-  <Folder Name="/.azure/">
-    <File Path="azure-pipelines-development.yml" />
-    <File Path="azure-pipelines-production.yml" />
-    <File Path="azure-pipelines-test.yml" />
-  </Folder>
   <Folder Name="/.config/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
@@ -16,6 +11,11 @@
     <File Path="DomainEvents.png" />
     <File Path="README.md" />
     <File Path="SolutionStructure.png" />
+  </Folder>
+  <Folder Name="/.github/">
+    <File Path=".github/workflows/development.yml" />
+    <File Path=".github/workflows/production.yml" />
+    <File Path=".github/workflows/test.yml" />
   </Folder>
   <Folder Name="/.scripts/">
     <File Path="Clean-Solution.ps1" />
