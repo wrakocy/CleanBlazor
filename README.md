@@ -5,11 +5,6 @@ with dependency injection. This repo has no business domain of its own — it ex
 generated (via `dotnet new`, below) into a fresh, client-specific solution, already carrying this
 codebase's conventions and its AI-agent guidance.
 
-Looking for a React frontend instead of Blazor Server? See the sibling template,
-[wrak.clean.react](https://github.com/wrakocy/wrak.clean.react) — same `Core`/`Infrastructure`
-backend conventions, an ASP.NET Core Web API + React SPA in place of Blazor. The two are fully
-independent repos; nothing is shared between them.
-
 ## Quickstart: generate a new client solution
 
 Prerequisites: .NET 10 SDK, a clone of this repo.
