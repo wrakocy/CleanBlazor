@@ -4,7 +4,7 @@ public class Throw : WebApplicationTestFixtureBase
 {
     public Throw(CustomWebApplicationFactory factory, ITestOutputHelper outputHelper) : base(factory, outputHelper) { }
 
-    [Fact(Skip = "This suddenly started failing. Figure out why. Just a test page.")]
+    [Fact]
     public async Task ReturnsViewWithCorrectMessage()
     {
         var rsp = await _client.GetAsync("/throw", TestContext.Current.CancellationToken);
