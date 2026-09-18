@@ -1,0 +1,146 @@
+# TEMPLATE — mirrors azure-pipelines-test.yml. Not wired to a real Azure environment yet.
+#
+# This repo is a Clean Architecture starting-point template, not a live product, so this
+# workflow only runs on-demand (workflow_dispatch) until a downstream project activates it.
+# To activate it in a project cloned from this template:
+#   1. Create (or reuse) an Azure AD App Registration + service principal with access to the
+#      real Key Vault and Web App for this environment.
+#   2. Add a federated credential on that App Registration trusting GitHub OIDC, scoped to
+#      this repo's `test` branch (or an `environment:Test` subject).
+#   3. Store AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID as GitHub Actions secrets
+#      (repo secrets or scoped to the `Test` environment).
+#   4. Replace every `# TODO` placeholder below (Key Vault name, Web App name) with real values.
+#   5. Uncomment the `push:` trigger block below and remove/adjust this comment.
+
+name: test
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - test
+
+env:
+  BUILD_CONFIGURATION: Release
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Pull Secrets from Azure Key Vault
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            # TODO: replace with the real Test Key Vault name
+            keyVaultName="your-test-key-vault-name"
+            for name in $(az keyvault secret list --vault-name "$keyVaultName" --query "[].name" -o tsv); do
+              value=$(az keyvault secret show --vault-name "$keyVaultName" --name "$name" --query value -o tsv)
+              echo "::add-mask::$value"
+              echo "$name=$value" >> "$GITHUB_ENV"
+            done
+
+      - name: Replace Test Config Tokens
+        uses: qetza/replacetokens-action@v1
+        with:
+          sources: '**/appsettings.IntegrationTests.json'
+          token-prefix: '#{'
+          token-suffix: '}#'
+          missing-var-log: warn
+
+      - name: Replace App Config Tokens
+        uses: qetza/replacetokens-action@v1
+        with:
+          sources: '**/appsettings.Test.json'
+          token-prefix: '#{'
+          token-suffix: '}#'
+          missing-var-log: warn
+
+      - name: Set Build Number
+        shell: pwsh
+        run: |
+          Set-Content -Path ./Wrak.CleanBlazor.Web/BuildInfo.cs -Value "namespace Wrak.CleanBlazor.Web; public static class BuildInfo { public const string Build = ""${{ github.run_number }}""; }"
+
+      - name: Use .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore Solution
+        run: dotnet restore Wrak.CleanBlazor.slnx
+
+      - name: Verify Pinned Package Versions
+        shell: pwsh
+        run: ./Verify-Package-Versions.ps1
+
+      - name: Build Solution
+        run: dotnet build Wrak.CleanBlazor.slnx --configuration $BUILD_CONFIGURATION -p:SourceRevisionId=${{ github.sha }}
+
+      - name: Run Tests
+        run: >
+          dotnet test Wrak.CleanBlazor.slnx
+          --configuration $BUILD_CONFIGURATION
+          --no-build
+          --report-trx
+          --results-directory ${{ runner.temp }}/TestResults
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Test Results
+          path: '${{ runner.temp }}/TestResults/*.trx'
+          reporter: dotnet-trx
+
+      - name: Publish Blazor Server App
+        run: >
+          dotnet publish Wrak.CleanBlazor.Web/Wrak.CleanBlazor.Web.csproj
+          --configuration $BUILD_CONFIGURATION
+          --output ${{ github.workspace }}/publish
+
+      - name: Publish Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: drop
+          path: ${{ github.workspace }}/publish
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: Test
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: drop
+          path: drop
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          # TODO: replace with the real Test Web App name
+          app-name: your-test-webapp-name
+          package: drop
