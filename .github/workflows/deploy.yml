@@ -1,0 +1,241 @@
+# Deploys a package built by the ci workflow (ci.yml) to Test or Production. Never builds anything
+# itself — it deploys the 'drop' artifact of a CI run:
+#   - Automatically to Test, whenever a CI run of main completes (workflow_run trigger below).
+#   - Manually to Test or Production (workflow_dispatch), using a chosen CI run (blank = the latest
+#     successful CI push run of main).
+#
+# Inert until a project opts in: every job requires the repository variable DEPLOY_ENABLED to be
+# 'true', so the template repo and freshly generated projects don't produce failing runs.
+# See docs/00-using-as-a-template.md ("Turning on deployments").
+#
+# Guards against deploying a bad build:
+#   1. CI only publishes 'drop' after every check passes (see ci.yml).
+#   2. The validate job rejects any CI run that didn't succeed, wasn't a push to main, or isn't the
+#      ci workflow's own run — before any environment approval is requested.
+#   3. The GitHub Environments 'Test'/'Production' hold required reviewers and a deployment branch
+#      policy (Production: main only), and the Azure federated credentials are scoped to them.
+#
+# Per-environment configuration (GitHub Environment settings):
+#   variables: KEY_VAULT_NAME, WEBAPP_NAME, RESOURCE_GROUP
+#   secrets:   AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
+
+name: deploy
+
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        type: choice
+        options:
+          - Test
+          - Production
+        default: Test
+      ci_run_id:
+        description: 'CI run id to deploy (blank = latest successful ci push run of main)'
+        type: string
+        required: false
+
+permissions: {}
+
+jobs:
+  validate:
+    # Automatic runs that couldn't possibly deploy (failed CI, PR-triggered CI) are skipped rather
+    # than failed. The script below re-verifies everything against the API regardless.
+    if: >-
+      vars.DEPLOY_ENABLED == 'true' &&
+      (github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'))
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    outputs:
+      environment: ${{ steps.resolve.outputs.environment }}
+      run_id: ${{ steps.resolve.outputs.run_id }}
+    steps:
+      - name: Resolve and verify CI run
+        id: resolve
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          INPUT_ENVIRONMENT: ${{ inputs.environment }}
+          INPUT_CI_RUN_ID: ${{ inputs.ci_run_id }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+          WORKFLOW_RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "workflow_run" ]; then
+            # Automatic deployments only ever target Test.
+            environment="Test"
+            run_id="$WORKFLOW_RUN_ID"
+            if [ "$WORKFLOW_RUN_CONCLUSION" != "success" ]; then
+              echo "::error::CI run $run_id concluded '$WORKFLOW_RUN_CONCLUSION'; refusing to deploy."
+              exit 1
+            fi
+          else
+            environment="$INPUT_ENVIRONMENT"
+            run_id="$INPUT_CI_RUN_ID"
+            if [ "$REF" != "refs/heads/main" ]; then
+              echo "::error::Manual deployments must be run from main, not '$REF'; refusing to deploy."
+              exit 1
+            fi
+            if [ -z "$run_id" ]; then
+              run_id=$(gh run list --workflow ci.yml --branch main --event push --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+              if [ -z "$run_id" ]; then
+                echo "::error::No successful ci push run of main found; refusing to deploy."
+                exit 1
+              fi
+            fi
+          fi
+
+          case "$environment" in
+            Test|Production) ;;
+            *) echo "::error::Unknown environment '$environment'."; exit 1 ;;
+          esac
+          if ! [[ "$run_id" =~ ^[0-9]+$ ]]; then
+            echo "::error::CI run id '$run_id' is not numeric."
+            exit 1
+          fi
+
+          IFS=$'\t' read -r status conclusion branch event path head_repo < <(
+            gh api "repos/$GH_REPO/actions/runs/$run_id" \
+              --jq '[.status, .conclusion, .head_branch, .event, .path, .head_repository.full_name] | @tsv')
+          echo "CI run $run_id: status=$status conclusion=$conclusion branch=$branch event=$event path=$path head_repo=$head_repo"
+
+          if [ "$status" != "completed" ] || [ "$conclusion" != "success" ]; then
+            echo "::error::CI run $run_id did not succeed (status '$status', conclusion '$conclusion'); refusing to deploy."
+            exit 1
+          fi
+          if [ "$branch" != "main" ] || [ "$event" != "push" ]; then
+            echo "::error::CI run $run_id was a '$event' of '$branch', not a push to main; refusing to deploy."
+            exit 1
+          fi
+          # head_branch is also a tag's name, so a tag called 'main' would pass the check above.
+          # The run path carries the ref for non-default-branch runs ("...ci.yml@refs/tags/main"),
+          # so require exactly ci.yml on the default branch, from this repository (not a fork).
+          if [ "$path" != ".github/workflows/ci.yml" ] && [ "$path" != ".github/workflows/ci.yml@refs/heads/main" ]; then
+            echo "::error::Run $run_id is not a ci.yml run of refs/heads/main ('$path'); refusing to deploy."
+            exit 1
+          fi
+          if [ "$head_repo" != "$GH_REPO" ]; then
+            echo "::error::Run $run_id was built from '$head_repo', not $GH_REPO; refusing to deploy."
+            exit 1
+          fi
+
+          drops=$(gh api "repos/$GH_REPO/actions/runs/$run_id/artifacts" \
+            --jq '[.artifacts[] | select(.name == "drop" and .expired == false)] | length')
+          if [ "$drops" -lt 1 ]; then
+            echo "::error::CI run $run_id has no unexpired 'drop' artifact; refusing to deploy."
+            exit 1
+          fi
+
+          echo "environment=$environment" >> "$GITHUB_OUTPUT"
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: validate
+    if: vars.DEPLOY_ENABLED == 'true'
+    name: deploy (${{ needs.validate.outputs.environment }})
+    runs-on: ubuntu-latest
+    environment: ${{ needs.validate.outputs.environment }}
+    # Serialize deployments per environment, never cancelling one in flight. Keyed here (not on the
+    # workflow) so only validated runs compete for the lock.
+    concurrency:
+      group: deploy-${{ needs.validate.outputs.environment }}
+      cancel-in-progress: false
+    permissions:
+      id-token: write
+      actions: read
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: drop
+          path: drop
+          run-id: ${{ needs.validate.outputs.run_id }}
+          github-token: ${{ github.token }}
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Config is applied as App Service app settings (environment variables), which override
+      # appsettings.{Environment}.json — the package itself carries no environment-specific values.
+      # Settings go through a JSON file (not CLI args) so secret values never appear in a process
+      # list, and `--output none` keeps az from echoing the resulting settings to the log.
+      - name: Apply App Settings from Key Vault
+        shell: bash
+        env:
+          KEY_VAULT_NAME: ${{ vars.KEY_VAULT_NAME }}
+          WEBAPP_NAME: ${{ vars.WEBAPP_NAME }}
+          RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP }}
+          DEPLOY_ENVIRONMENT: ${{ needs.validate.outputs.environment }}
+        run: |
+          set -euo pipefail
+          umask 077
+
+          for required in KEY_VAULT_NAME WEBAPP_NAME RESOURCE_GROUP; do
+            if [ -z "${!required}" ]; then
+              echo "::error::Environment variable $required is not set."
+              exit 1
+            fi
+          done
+
+          settings_file="$RUNNER_TEMP/appsettings.json"
+          # The package is environment-agnostic, so the App Service's environment name (which picks
+          # appsettings.{Environment}.json) is itself an app setting. Not a secret.
+          jq -n --arg value "$DEPLOY_ENVIRONMENT" \
+            '[{name: "ASPNETCORE_ENVIRONMENT", value: $value, slotSetting: false}]' > "$settings_file"
+
+          # "<Key Vault secret name>=<App Service app setting name>". To add a setting, add a pair
+          # here and create the secret in each environment's Key Vault.
+          mappings=(
+            "azure-ad-tenant-id=AzureAd__TenantId"
+            "azure-ad-client-id=AzureAd__ClientId"
+            "azure-ad-client-secret=AzureAd__ClientSecret"
+            "app-insights-connection-string=ApplicationInsights__ConnectionString"
+          )
+
+          for mapping in "${mappings[@]}"; do
+            secret_name="${mapping%%=*}"
+            setting_name="${mapping#*=}"
+            value=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "$secret_name" --query value -o tsv)
+            # Mask before the value is used anywhere. Mask each line: a multi-line value is only
+            # masked line-by-line by the runner.
+            while IFS= read -r line; do
+              [ -n "$line" ] && echo "::add-mask::$line"
+            done <<< "$value"
+            # Value goes in via the environment, not --arg, so it isn't in jq's argv.
+            SETTING_VALUE="$value" jq --arg name "$setting_name" \
+              '. + [{name: $name, value: env.SETTING_VALUE, slotSetting: false}]' \
+              "$settings_file" > "$settings_file.tmp"
+            mv "$settings_file.tmp" "$settings_file"
+          done
+
+          az webapp config appsettings set \
+            --name "$WEBAPP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --settings "@$settings_file" \
+            --output none
+
+      - name: Remove App Settings File
+        if: always()
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/appsettings.json" "$RUNNER_TEMP/appsettings.json.tmp"
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.WEBAPP_NAME }}
+          package: drop

@@ -96,8 +96,8 @@ tests, and review does not imply permission to commit or push it. Ask before com
 before pushing, ask again before opening the PR; state what you're about to do (files/summary,
 branch/remote) each time.
 
-Once the PR is open, CI (`azure-pipelines-*.yml`: restore, `Verify-Package-Versions.ps1`, build,
-test) and human review apply unchanged — this skill's local verification and specialist reviews
+Once the PR is open, CI (`.github/workflows/ci.yml`: restore, `Verify-Package-Versions.ps1`,
+`dotnet format --verify-no-changes`, build, test) and human review apply unchanged — this skill's local verification and specialist reviews
 supplement that pipeline, they don't replace it. This repo's CI does not currently run
 static/security analysis (no SonarQube/CodeQL step configured); if one is added later, it
 re-verifies what the local `security-reviewer` pass already checked, it doesn't substitute for it.

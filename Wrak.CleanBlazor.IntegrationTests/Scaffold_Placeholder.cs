@@ -1,4 +1,4 @@
-namespace Wrak.CleanBlazor.IntegrationTests;
+﻿namespace Wrak.CleanBlazor.IntegrationTests;
 
 // Placeholder so this project has at least one test: Microsoft.Testing.Platform treats a
 // zero-test run as a failure, which would otherwise fail CI before any real integration

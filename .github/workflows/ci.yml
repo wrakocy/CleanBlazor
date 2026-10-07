@@ -1,0 +1,103 @@
+# Builds, verifies, and tests every push to main and every PR targeting main. On a push to main
+# that passes every step, it also publishes the deployable package as the 'drop' artifact, which
+# deploy.yml consumes. The package is environment-agnostic: secrets/config are applied at deploy
+# time as App Service app settings, so the same build is promoted unchanged from Test to Production.
+#
+# The job id (`ci`) is the check name to require in a branch ruleset — don't rename it casually.
+
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  BUILD_CONFIGURATION: Release
+
+# checks: write lets dorny/test-reporter create its check run (it can't on fork PRs; see below).
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set Build Number
+        shell: pwsh
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          $path = './Wrak.CleanBlazor.Web/BuildInfo.cs'
+          $content = Get-Content -Path $path -Raw
+          $stamped = $content -replace 'Build = "[^"]*"', "Build = ""$env:BUILD_NUMBER"""
+          if ($stamped -eq $content) { throw "Could not find the Build constant in $path" }
+          Set-Content -Path $path -Value $stamped -Encoding utf8BOM -NoNewline
+
+      - name: Use .NET SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore Solution
+        run: dotnet restore Wrak.CleanBlazor.slnx
+
+      - name: Verify Pinned Package Versions
+        shell: pwsh
+        run: ./Verify-Package-Versions.ps1
+
+      - name: Verify Formatting
+        run: dotnet format Wrak.CleanBlazor.slnx --verify-no-changes --no-restore
+
+      - name: Build Solution
+        run: dotnet build Wrak.CleanBlazor.slnx --configuration $BUILD_CONFIGURATION --no-restore -p:SourceRevisionId=${{ github.sha }}
+
+      - name: Run Tests
+        run: >
+          dotnet test Wrak.CleanBlazor.slnx
+          --configuration $BUILD_CONFIGURATION
+          --no-build
+          --report-trx
+          --results-directory ${{ runner.temp }}/TestResults
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v3
+        if: success() || failure()
+        # dorny/test-reporter's trx parser throws on a .trx with 0 or 1 UnitTest entries
+        # (e.g. an as-yet-empty test project in this template) — annotation only, so
+        # don't let a parser bug fail the run; the "Run Tests" step above is the real gate.
+        continue-on-error: true
+        with:
+          name: Test Results
+          path: '${{ runner.temp }}/TestResults/*.trx'
+          reporter: dotnet-trx
+
+      # Everything below must keep success() semantics (no `always()`/`failure()`, no
+      # continue-on-error) — a run with any failed check above must never produce a deployable
+      # artifact.
+
+      - name: Publish Blazor Server App
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: >
+          dotnet publish Wrak.CleanBlazor.Web/Wrak.CleanBlazor.Web.csproj
+          --configuration $BUILD_CONFIGURATION
+          --no-build
+          --output ${{ github.workspace }}/publish
+
+      - name: Publish Artifact
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v7
+        with:
+          name: drop
+          path: ${{ github.workspace }}/publish
+          if-no-files-found: error

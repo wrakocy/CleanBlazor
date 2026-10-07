@@ -46,7 +46,8 @@ at rest in transit between server and client state.
 
 - **[Required]** Flag any secret, connection string, API key, or credential committed as a literal
   in source or in any `appsettings*.json` file (as opposed to Key Vault/environment/user-secrets,
-  per this repo's existing `azure-pipelines-*.yml` `AzureKeyVault@2`/`ReplaceTokens@6` pattern).
+  per this repo's `.github/workflows/deploy.yml`, which reads Key Vault secrets at deploy time and
+  applies them as App Service app settings — no `#{token}#` placeholders in `appsettings*.json`).
 - **[Required]** Flag a fallback default for a secret-bearing configuration value that would
   silently function in a non-Development environment (masks a missing Key Vault binding instead of
   failing fast).

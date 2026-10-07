@@ -15,6 +15,20 @@ wired together with dependency injection). See [docs/](docs/) for the full archi
 > mirrored in [.github/copilot-instructions.md](.github/copilot-instructions.md) and
 > [.github/instructions/](.github/instructions/) — keep both in sync if you edit either side.
 
+## CI & Deployment
+
+GitHub Actions around a single long-lived `main` branch (details: README "Branching, CI and
+Deployment"):
+
+- **CI** (`.github/workflows/ci.yml`, job `ci`) runs on push/PR to `main`: stamp `BuildInfo.cs` →
+  restore → `Verify-Package-Versions.ps1` → `dotnet format --verify-no-changes --no-restore` →
+  build → test. Only a passing push to `main` publishes the `drop` artifact.
+- **Deploy** (`.github/workflows/deploy.yml`) never builds. It deploys a CI run's `drop` to Test
+  automatically, or to Test/Production manually, after a `validate` job rejects any run that
+  isn't a successful push to `main`. It is inert unless repo variable `DEPLOY_ENABLED` is `true`.
+  Secrets come from Key Vault at deploy time and become App Service app settings; no secrets or
+  `#{token}#` placeholders belong in any `appsettings*.json`.
+
 ## Persistence model
 
 <!-- Delete the two that don't apply once decided. This single choice determines whether the
@@ -142,7 +156,8 @@ satisfied by an earlier, more general approval.
    changed the risk area that reviewer examined — not as a matter of course.
 8. Ask the user to confirm before committing, then again before pushing, then again before opening
    the PR — each is its own explicit confirmation, not implied by the previous one. Once opened,
-   existing CI (`azure-pipelines-*.yml`: restore, `Verify-Package-Versions.ps1`, build, test) and
-   human review apply unchanged — these subagents supplement that process, not replace it. If
+   existing CI (`.github/workflows/ci.yml`: restore, `Verify-Package-Versions.ps1`,
+   `dotnet format --verify-no-changes`, build, test) and human review apply unchanged — these
+   subagents supplement that process, not replace it. If
    static/security analysis (e.g. SonarQube, CodeQL) is added to CI later, treat it the same way:
    CI re-verifies, it doesn't replace the local specialist review.

@@ -24,6 +24,20 @@ wired together with dependency injection). See `docs/` for the full architecture
       in Core.
 - [ ] Both — decided per domain, not globally.
 
+## CI & Deployment
+
+GitHub Actions around a single long-lived `main` branch (details: README "Branching, CI and
+Deployment"):
+
+- **CI** (`.github/workflows/ci.yml`, job `ci`) runs on push/PR to `main`: stamp `BuildInfo.cs` →
+  restore → `Verify-Package-Versions.ps1` → `dotnet format --verify-no-changes --no-restore` →
+  build → test. Only a passing push to `main` publishes the `drop` artifact.
+- **Deploy** (`.github/workflows/deploy.yml`) never builds. It deploys a CI run's `drop` to Test
+  automatically, or to Test/Production manually, after a `validate` job rejects any run that
+  isn't a successful push to `main`. It is inert unless repo variable `DEPLOY_ENABLED` is `true`.
+  Secrets come from Key Vault at deploy time and become App Service app settings; no secrets or
+  `#{token}#` placeholders belong in any `appsettings*.json`.
+
 ## Build & Test
 
 Primary workflow is Visual Studio: open `Wrak.CleanBlazor.slnx` and hit F6 — `Web` is
@@ -153,8 +167,9 @@ satisfied by an earlier, more general approval.
    changed the risk area that reviewer examined.
 8. Ask the user to confirm before committing, then again before pushing, then again before opening
    the PR — each is its own explicit confirmation, not implied by the previous one. Once opened,
-   existing CI (`azure-pipelines-*.yml`: restore, `Verify-Package-Versions.ps1`, build, test) and
-   human review apply unchanged — this workflow supplements that pipeline, it doesn't replace it.
+   existing CI (`.github/workflows/ci.yml`: restore, `Verify-Package-Versions.ps1`,
+   `dotnet format --verify-no-changes`, build, test) and human review apply unchanged — this
+   workflow supplements that pipeline, it doesn't replace it.
    This repo's CI does not currently run static/security analysis (no SonarQube/CodeQL step
    configured); if one is added later, it re-verifies what `security-reviewer` already checked, it
    doesn't substitute for it.

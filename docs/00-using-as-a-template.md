@@ -111,6 +111,42 @@ generating, still do this by hand — the HTML comments already sitting in `AGEN
   general-purpose guidance (with the name already substituted) and needs no edits unless you want
   to prune guidance that doesn't apply to your chosen persistence shape.
 
+## Turning on deployments
+
+A generated project ships with `.github/workflows/ci.yml` (active immediately) and
+`.github/workflows/deploy.yml` (inert: every job requires the repository variable
+`DEPLOY_ENABLED` to be `true`). Deployment targets Azure App Service using OIDC, so no Azure
+password is stored. To turn it on:
+
+1. **Create GitHub Environments** `Test` and `Production` (Settings → Environments). Give
+   **both** a deployment branch policy limited to `main` — the federated credential subject
+   (step 2) doesn't pin a branch or workflow file, so this policy is what stops a feature-branch
+   workflow from requesting `environment: Test`/`Production` and getting an Azure token. (Automatic
+   deploys run from `main`, so they're unaffected.) On `Production`, also add required reviewers
+   and enable "Prevent self-review"; reviewers should check the CI run id being deployed.
+2. **Create an Entra app registration** (or reuse one) per environment with access to that
+   environment's Web App (e.g. Website Contributor: deploy + app settings) and Key Vault (secret
+   read, e.g. Key Vault Secrets User), and add a **federated credential** to each,
+   issuer `https://token.actions.githubusercontent.com`, with subject
+   `repo:<owner>/<repo>:environment:Test` / `repo:<owner>/<repo>:environment:Production`.
+3. **Create the Key Vault secrets** in each environment's vault: `azure-ad-tenant-id`,
+   `azure-ad-client-id`, `azure-ad-client-secret`, and `app-insights-connection-string` (the full
+   `InstrumentationKey=...;IngestionEndpoint=...` connection string).
+4. **Set environment variables** `KEY_VAULT_NAME`, `WEBAPP_NAME`, `RESOURCE_GROUP` and
+   **environment secrets** `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` on each
+   environment.
+5. **Set the repository variable** `DEPLOY_ENABLED` = `true` (Settings → Secrets and variables →
+   Actions → Variables).
+6. Recommended **rulesets** on `main`: require a pull request, require the `ci` status check
+   (allow repository-admin bypass), and block deletion and non-fast-forward pushes. Also add a
+   tag ruleset restricting creation of tags (at minimum one named `main`), since the deploy
+   validation keys off the run's branch/tag name.
+
+Also replace `AzureAd:Domain` (`your-domain.com`) in `appsettings.Test.json` /
+`appsettings.Production.json`. Behavior and the config/secrets table are described in the README's
+"Branching, CI and Deployment" section (replace the template's README, but keep that section's
+content current for your project).
+
 ## Updating or removing the template
 
 ```bash

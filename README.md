@@ -103,6 +103,103 @@ dotnet build Wrak.CleanBlazor.slnx
 dotnet test Wrak.CleanBlazor.slnx
 ```
 
+## Branching, CI and Deployment
+
+The repository has a single long-lived branch, `main`. Work happens on short-lived feature
+branches merged into `main` through pull requests. Builds and deployments run in GitHub Actions,
+using two workflows that do separate jobs:
+
+| Workflow | File | Runs when | What it does |
+| --- | --- | --- | --- |
+| **ci** | `.github/workflows/ci.yml` | Every push to `main` and every pull request targeting `main` (or manually) | Builds and verifies the code, and publishes a deployable package |
+| **deploy** | `.github/workflows/deploy.yml` | Automatically after every CI run of `main` (Test only), or when someone runs it manually | Deploys a package produced by CI to Test or Production |
+
+### CI
+
+CI runs the same checks you should run locally before opening a pull request, in this order:
+
+1. Stamps the run number into `BuildInfo.cs` (shown in the app's About page).
+2. Restores NuGet packages.
+3. Verifies pinned package versions (`Verify-Package-Versions.ps1`).
+4. Verifies formatting (`dotnet format --verify-no-changes`).
+5. Builds the solution (Release).
+6. Runs all unit, integration and functional tests.
+
+On a push to `main` (not on a pull request), if **every** step passes, CI then publishes the Web
+project and uploads it as an artifact named `drop`. A run with any failure produces no artifact,
+so there is nothing to deploy. The package contains no environment-specific settings or secrets;
+the same package is deployed to Test and then promoted, unchanged, to Production.
+
+#### Running CI manually
+
+You rarely need to — CI runs for every pull request and push to `main`. If a run failed for a
+reason unrelated to your change (a flaky test, a runner problem), use **Re-run failed jobs** on
+the run. To start one anyway, use **Actions → ci → Run workflow** and pick the branch. A manual
+run never publishes `drop`.
+
+### Deploying
+
+Deployment is **off by default**: both `deploy` jobs are skipped unless the repository variable
+`DEPLOY_ENABLED` is `true`, so this template and freshly generated projects stay inert. See
+[docs/00-using-as-a-template.md](docs/00-using-as-a-template.md#turning-on-deployments) for the
+one-time setup.
+
+**Test deploys automatically.** Whenever a CI run of `main` completes, `deploy` starts and
+deploys that run's package to Test. **Production is always manual**, and you can also deploy to
+Test manually (for example, to redeploy an older build). Use **Actions → deploy → Run workflow**
+(from `main`):
+
+1. Choose the **environment**: `Test` or `Production`.
+2. Optionally enter a **CI run id**. Blank means the latest successful CI push run of `main`. To
+   promote a build from Test to Production, enter the same run id you deployed to Test.
+3. Run it. The workflow has two jobs:
+   - **validate** confirms the CI run succeeded, was a push to `main`, is a `ci.yml` run, and
+     still has its `drop` artifact; and that an automatic run is targeting Test. If not, the
+     deployment stops here — before any approval is requested.
+   - **deploy** waits for approval from the GitHub Environment's required reviewers (configure
+     them on Production), reads the environment's secrets from Azure Key Vault, applies them as
+     App Service app settings, and deploys the package.
+
+The build number on the About page is the CI run's number (the `#N` in the Actions run list). The
+**CI run id** the deploy workflow asks for is the different number at the end of that run's URL
+(`.../actions/runs/<id>`).
+
+CI runs of `main` that failed, or that weren't pushes, don't start a deployment (the `deploy`
+run is skipped). The workflow also sets `ASPNETCORE_ENVIRONMENT` on the App Service to the target
+environment name, which selects `appsettings.Test.json` / `appsettings.Production.json`.
+
+### Configuration and Secrets
+
+No secrets are stored in the repository. `appsettings.Test.json` and `appsettings.Production.json`
+only hold non-sensitive values. Everything else is supplied by the deploy workflow as **App
+Service app settings**, which the app reads as environment variables that override the
+`appsettings` files (for example `AzureAd__ClientSecret` supplies `AzureAd:ClientSecret`).
+
+| App setting | Key Vault secret | Environments |
+| --- | --- | --- |
+| `AzureAd__TenantId` | `azure-ad-tenant-id` | Test, Production |
+| `AzureAd__ClientId` | `azure-ad-client-id` | Test, Production |
+| `AzureAd__ClientSecret` | `azure-ad-client-secret` | Test, Production |
+| `ApplicationInsights__ConnectionString` | `app-insights-connection-string` (the full connection string) | Test, Production |
+
+Per-environment values live in each **GitHub Environment** (Settings → Environments):
+
+| Kind | Name | Purpose |
+| --- | --- | --- |
+| Variable | `KEY_VAULT_NAME` | Key Vault the secrets are read from |
+| Variable | `WEBAPP_NAME` | App Service to deploy to |
+| Variable | `RESOURCE_GROUP` | Resource group of that App Service |
+| Secret | `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` | OIDC identity used by `azure/login` (no stored Azure password) |
+
+To add a new secret or setting: create the secret in each environment's Key Vault, then add a
+`"<secret-name>=<Section__Key>"` entry to the `mappings` list in `deploy.yml`. Deploying never
+removes app settings; delete obsolete ones in the Azure portal.
+
+### Branch protection
+
+Recommended GitHub rulesets on `main`: require changes to go through a pull request, require the
+`ci` check to pass (repository admins may bypass), and block deletion and force-pushes.
+
 ## Further reading
 
 This template's design goal is a well-factored, highly-testable, SOLID foundation. If any of
