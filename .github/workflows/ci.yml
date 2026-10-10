@@ -91,7 +91,7 @@ jobs:
         run: >
           dotnet publish Wrak.CleanBlazor.Web/Wrak.CleanBlazor.Web.csproj
           --configuration $BUILD_CONFIGURATION
-          --no-build
+          --no-restore
           --output ${{ github.workspace }}/publish
 
       - name: Publish Artifact
