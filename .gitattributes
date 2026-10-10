@@ -1,0 +1,3 @@
+# .editorconfig requires CRLF for C# files; make every checkout (incl. Linux CI) use it.
+*.cs text eol=crlf
+*.vb text eol=crlf
