@@ -121,18 +121,14 @@ repository. They come from [AgentKit](https://github.com/wrakocy/AgentKit), and 
 solution is pre-wired to it: the vendored files under `.github/`, `.github/agentkit.json` (kit
 version, tiers, update track), `.github/agentkit.lock.json` (which files the kit owns), and a
 `.claude/settings.json` that enables the Claude Code plugins at the same pinned version. Nothing
-else is needed to use them. Claude Code asks you to trust the folder; developers need read access
-to the AgentKit repository (`gh auth login && gh auth setup-git`).
+else is needed to use them. Claude Code asks you to trust the folder. The AgentKit repository is
+public, so no tokens or special access are required.
 
 To **receive updates**, `.github/workflows/agentkit-sync.yml` runs weekly and opens a pull request
-with the newest AgentKit release in your `track` (`1.x`). It needs:
-
-- a repository secret `AGENTKIT_TOKEN`: a fine-grained token with *Contents: read* on the AgentKit
-  repository;
-- *Settings → Actions → General → Allow GitHub Actions to create and approve pull requests*.
-
-Until the secret exists the weekly run fails visibly; the rest keeps working at the pinned version.
-If you don't want updates, delete the workflow. If your solution isn't .NET, remove `"dotnet"` from
+with the newest AgentKit release in your `track` (`1.x`). The only setup is *Settings → Actions →
+General → Allow GitHub Actions to create and approve pull requests* in the new repository; until
+that is on, the weekly run can't open its PR and fails visibly, while everything else keeps working
+at the pinned version. If you don't want updates, delete the workflow. If your solution isn't .NET, remove `"dotnet"` from
 `tiers` in `.github/agentkit.json` and re-sync. The sync never overwrites a synced file you edited
 locally; it lists it as a conflict in the PR instead. Put this solution's own rules in
 `AGENTS.md` and in `.github/instructions/code-review-<area>.instructions.md` files (not named
