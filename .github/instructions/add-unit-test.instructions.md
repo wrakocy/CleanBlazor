@@ -13,6 +13,9 @@ All unit tests live in the single `<Product>.UnitTests` project — never create
 per-source-project unit test project — mirroring the namespace of the code under test:
 `Core/<Domain>/...`, `Infrastructure/...`, `Web/...`. See `docs/04-testing-guide.md`.
 
+These are this solution's conventions. They extend AgentKit's general `dotnet-unit-test` skill
+(`dotnet-unit-test` in `.github/skills/`), which covers xUnit/Moq practice in any .NET repository.
+
 ## Steps
 
 1. **One test class per method under test**, named `<ClassUnderTest>_<MethodName>.cs`, e.g.

@@ -1,0 +1,10 @@
+{
+  "version": "1.1.0",
+  "tiers": [
+    "core",
+    "dotnet"
+  ],
+  "repo": "wrakocy/AgentKit",
+  "track": "1.x",
+  "defaultBranch": "main"
+}

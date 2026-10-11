@@ -14,6 +14,9 @@ wired together with dependency injection). See [docs/](docs/) for the full archi
 > Working in Visual Studio with GitHub Copilot instead of Claude Code? This same guidance is
 > mirrored in [.github/copilot-instructions.md](.github/copilot-instructions.md) and
 > [.github/instructions/](.github/instructions/) — keep both in sync if you edit either side.
+>
+> The reviewer agents, the `verify-and-review` workflow, and the organization-wide review rules
+> come from [AgentKit](https://github.com/wrakocy/AgentKit); see [PR Workflow](#pr-workflow).
 
 ## CI & Deployment
 
@@ -50,8 +53,9 @@ dotnet test Wrak.CleanBlazor.slnx
 ```
 
 While iterating, scope `dotnet test` to one project/class instead of the whole solution. See
-[verify-and-review](.claude/skills/verify-and-review/SKILL.md) for the full pre-PR procedure,
-including when to invoke which specialist reviewer.
+[PR Workflow](#pr-workflow) for the full pre-PR procedure, including when to invoke which
+specialist reviewer. This section is kept explicit (rather than relying on AgentKit's inferred .NET
+default) because of the `Verify-Package-Versions.ps1` step.
 
 ## Project Map
 
@@ -74,8 +78,11 @@ including when to invoke which specialist reviewer.
 - `add-unit-test` — add a test following this repo's one-class-per-method and Builder conventions.
 - `add-integration-test` — add a real-dependency test in `IntegrationTests`.
 - `add-functional-test` — add a full-stack functional test for a Blazor page.
-- `verify-and-review` — the pre-PR verification ladder and risk-based specialist-reviewer
-  selection; see [PR Workflow](#pr-workflow) below.
+- `verify-and-review` — from AgentKit (`/agentkit-core:verify-and-review`): the pre-PR
+  verification ladder and risk-based specialist-reviewer selection; see
+  [PR Workflow](#pr-workflow) below.
+- `dotnet-unit-test` — from AgentKit (`/agentkit-dotnet:dotnet-unit-test`): general xUnit/Moq
+  conventions that `add-unit-test` extends.
 
 ## Load-Bearing Conventions
 
@@ -124,40 +131,35 @@ including when to invoke which specialist reviewer.
 
 ## PR Workflow
 
-Default to one primary agent doing the implementation, writing/updating its own tests, and
-running deterministic verification — not a fleet of subagents spawned by habit. Specialist
-reviewers are independent-verification steps at specific risk boundaries, invoked only when the
-change actually touches that boundary. Full procedure and reviewer-briefing shape:
-[verify-and-review](.claude/skills/verify-and-review/SKILL.md).
+The reviewer agents, the `verify-and-review` workflow, the commit/push/PR confirmation rules and the
+organization-wide review rules come from [AgentKit](https://github.com/wrakocy/AgentKit); this
+repository pins the version in `.github/agentkit.json`. Before opening a PR, run
+`/agentkit-core:verify-and-review` (Claude Code) or the `verify-and-review` skill (Copilot): it runs
+the [Build & Test](#build--test) ladder above, reviews your diff, and invokes only the specialist
+reviewers (`code-reviewer`, `test-reviewer`, `security-reviewer`) that the change warrants. Files
+synced from AgentKit (`.github/agents/`, `.github/skills/`, and `.github/instructions/` files named
+`code-review-kit-*` or `agentkit-*`) are overwritten by the weekly sync PR; don't edit them here.
+Change them in AgentKit instead.
 
-**Never `git commit`, `git push`, or create/update a pull request without the user's explicit,
-in-the-moment confirmation of that specific action.** Implementing, testing, and locally
-reviewing a change never implies permission to commit or push it — ask, state what you're about
-to commit/push (files or a summary) and to which branch/remote, and wait for a clear yes. This
-applies to every agent working in this repo (primary and specialist alike) and cannot be
-satisfied by an earlier, more general approval.
+## Agent Review Triggers
 
-1. Understand the task and the relevant slice of the architecture; inspect only what the task
-   touches.
-2. Implement the change, writing/updating the tests it needs as you go.
-3. Run the [Build & Test](#build--test) ladder above.
-4. Review your own diff (`git diff`) before asking anyone else to.
-5. Invoke only the specialist reviewers this change actually warrants:
+This repository's own examples of when each reviewer applies (they sharpen the generic triggers in
+the `verify-and-review` skill):
 
-   | Reviewer | Invoke when | Skip when |
-   | --- | --- | --- |
-   | `code-reviewer` | Any meaningful implementation change (new/changed use case, handler, component, Infrastructure integration, cross-cutting wiring). Also covers Blazor UI behavior, states, accessibility, and design-system usage when the diff touches `Web` — brief it with the design artifact if one exists | Docs/comment-only edits, a single-constant change, a rename the compiler already verified |
-   | `test-reviewer` | Behavior materially changed, or the change carries real regression risk (new/changed handler, validator, domain event, boundary conversion) | No behavior changed and no tests needed changing |
-   | `security-reviewer` | Change touches auth, authorization, claims/identity, secrets/config, sensitive data, externally supplied input, file upload, crypto, or endpoint exposure | Ordinary CRUD with no security boundary crossed |
+- **`code-reviewer`**: any new or changed use case (Command/Query/Handler), component,
+  Infrastructure integration (repository, API client, cache service), or cross-cutting wiring in
+  `DependencyInjectionExtensions.cs`. It also covers Blazor UI behavior, states, accessibility and
+  design-system usage when the diff touches `Web`; brief it with the design artifact if one exists.
+  Skip it for docs/comment-only edits, a single-constant change, or a rename the compiler verified.
+- **`test-reviewer`**: a new or changed handler, validator, domain event, or boundary conversion
+  (model to/from DTO or entity), or any change with real regression risk. Skip it when no behavior
+  changed and no tests needed changing.
+- **`security-reviewer`**: anything touching auth, authorization, claims/identity
+  (`ClaimsPrincipalExtensions`, `AppIdentity`), secrets or configuration, sensitive data,
+  externally supplied input, file upload, cryptography, or endpoint exposure. Skip it for ordinary
+  CRUD that crosses no security boundary.
 
-6. Address the findings you agree with; each reviewer reports independently and edits nothing
-   itself.
-7. Re-run only the deterministic checks affected by the fix. Re-invoke a reviewer only if the fix
-   changed the risk area that reviewer examined — not as a matter of course.
-8. Ask the user to confirm before committing, then again before pushing, then again before opening
-   the PR — each is its own explicit confirmation, not implied by the previous one. Once opened,
-   existing CI (`.github/workflows/ci.yml`: restore, `Verify-Package-Versions.ps1`,
-   `dotnet format --verify-no-changes`, build, test) and human review apply unchanged — these
-   subagents supplement that process, not replace it. If
-   static/security analysis (e.g. SonarQube, CodeQL) is added to CI later, treat it the same way:
-   CI re-verifies, it doesn't replace the local specialist review.
+CI (`.github/workflows/ci.yml`: restore, `Verify-Package-Versions.ps1`,
+`dotnet format --verify-no-changes`, build, test) and human review apply unchanged once a PR is
+open; the local reviews supplement that pipeline, they don't replace it. If static/security analysis
+(e.g. SonarQube, CodeQL) is added to CI later, treat it the same way.

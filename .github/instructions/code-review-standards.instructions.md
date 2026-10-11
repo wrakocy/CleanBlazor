@@ -5,24 +5,16 @@ applyTo: "*.Core/**/*.cs,*.Infrastructure/**/*.cs,*.Web/**/*.cs,*.Web/**/*.razor
 
 # Code Review Standards — Repository-Wide
 
-> Shared review standard — no `.claude/` counterpart. GitHub Copilot Code Review applies this
-> file automatically via its `applyTo` globs, and the Claude Code reviewer agents in
-> [.claude/agents/](../../.claude/agents/) are pointed at this same file. Edit it here only;
-> don't fork a Claude-side copy.
+> Repository-specific review rules. GitHub Copilot Code Review applies this file automatically via
+> its `applyTo` globs, and the AgentKit reviewer agents read it too. The organization-wide rules
+> (severity tags, general conventions) are in the synced `code-review-kit-*.instructions.md` files
+> beside it; change those in AgentKit, not here.
 
 These rules are derived directly from this repo's `AGENTS.md` and `docs/` playbook — they are not
-independent style preferences. Two severity tiers are used throughout this file and its siblings:
-
-- **[Required]** — corresponds to a MUST/MUST NOT in `AGENTS.md`. Flag a violation as a blocking
-  finding: the PR should not merge as-is.
-- **[Suggested]** — corresponds to a SHOULD or a "prefer X" in the playbook. Flag as a non-blocking
-  suggestion the author can accept or explain.
-
-**Before flagging a [Suggested] item, or any item that references "existing"/"sibling"/"neighboring"
-code, look at the nearest analogous file already in the repo** (the same kind of handler, the same
-kind of page, a sibling domain) rather than judging the new code in isolation. A new pattern that
-diverges from every existing example in the same layer is a much stronger signal than a rule read
-on its own.
+independent style preferences. **[Required]** corresponds to a MUST/MUST NOT in `AGENTS.md` and
+**[Suggested]** to a SHOULD or a "prefer X" in the playbook. The full meaning of the tags, and the
+rule to compare against the nearest sibling code before flagging, are in
+`code-review-kit-general.instructions.md`.
 
 ## Architecture boundaries
 
@@ -115,6 +107,3 @@ playbook explicitly notes they are **not** enforced by `.editorconfig` or a stan
 - **[Required]** Flag a manually written `if (x == null) throw ...` guard clause where the
   codebase's convention is the `Throw` package (`x.ThrowIfNull().Value`). (AGENTS.md MUST;
   docs/01-architecture-overview.md)
-- **[Suggested]** Flag large commented-out blocks of a half-built or removed feature left in a
-  diff — delete unused code rather than leaving it commented out.
-  (docs/03-feature-development-guide.md — "What NOT to do")

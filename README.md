@@ -33,6 +33,11 @@ behaves against this template.
   [.claude/skills/](.claude/skills/), and [.github/instructions/](.github/instructions/). Claude
   Code or GitHub Copilot working in the new repo already knows this codebase's CQRS/DI/testing
   conventions from the first commit — nothing to re-teach it per client.
+- The reviewer agents (`code-reviewer`, `test-reviewer`, `security-reviewer`), the
+  `verify-and-review` workflow and the organization-wide review rules, pre-wired from
+  [AgentKit](https://github.com/wrakocy/AgentKit): vendored under `.github/`, Claude Code plugins
+  pinned in `.claude/settings.json`, and a weekly sync workflow. See
+  [docs/00-using-as-a-template.md](docs/00-using-as-a-template.md#agentkit-reviewers-and-workflow).
 - A few things generation deliberately does **not** decide for you: the persistence-model
   checkbox and one-line domain description in `AGENTS.md`/`copilot-instructions.md` (still
   placeholders, called out by the HTML comments already sitting in both files), and this README
@@ -84,8 +89,9 @@ copilot-instructions.md's [Development & Review Workflow](.github/copilot-instru
 one primary implementation pass plus deterministic verification, with the `code-reviewer`,
 `test-reviewer`, and `security-reviewer` agents invoked only at the risk boundaries each one
 actually applies to (UI review is a conditional section inside `code-reviewer`, not a separate
-agent). The Claude Code procedure is spelled out in
-[.claude/skills/verify-and-review/](.claude/skills/verify-and-review/).
+agent). The procedure is the `verify-and-review` skill from
+[AgentKit](https://github.com/wrakocy/AgentKit): run `/agentkit-core:verify-and-review` in Claude
+Code, or the `verify-and-review` skill in Copilot.
 
 ## Working on this template itself
 
