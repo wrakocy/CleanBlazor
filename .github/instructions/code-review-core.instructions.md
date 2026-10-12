@@ -5,13 +5,13 @@ applyTo: "*.Core/**/*.cs"
 
 # Code Review Standards — Core
 
-> Repository-specific review rules. GitHub Copilot Code Review applies this file automatically via
-> its `applyTo` globs, and the AgentKit reviewer agents read it too. The organization-wide rules
-> (severity tags, general conventions) are in the synced `code-review-kit-*.instructions.md` files
-> beside it; change those in AgentKit, not here.
+> Shared review standard — no `.claude/` counterpart. GitHub Copilot Code Review applies this
+> file automatically via its `applyTo` globs, and the Claude Code reviewer agents in
+> [.claude/agents/](../../.claude/agents/) are pointed at this same file. Edit it here only;
+> don't fork a Claude-side copy.
 
 Severity tags `[Required]`/`[Suggested]` follow the same meaning as in
-`code-review-kit-general.instructions.md`.
+`code-review-standards.instructions.md`.
 
 ## Vertical-slice structure
 

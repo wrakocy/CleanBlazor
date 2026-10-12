@@ -5,13 +5,13 @@ applyTo: "*.Web/**/*.razor,*.Web/**/*.cs"
 
 # Code Review Standards — Web / Blazor
 
-> Repository-specific review rules. GitHub Copilot Code Review applies this file automatically via
-> its `applyTo` globs, and the AgentKit reviewer agents read it too. The organization-wide rules
-> (severity tags, general conventions) are in the synced `code-review-kit-*.instructions.md` files
-> beside it; change those in AgentKit, not here.
+> Shared review standard — no `.claude/` counterpart. GitHub Copilot Code Review applies this
+> file automatically via its `applyTo` globs, and the Claude Code reviewer agents in
+> [.claude/agents/](../../.claude/agents/) are pointed at this same file. Edit it here only;
+> don't fork a Claude-side copy.
 
 Severity tags `[Required]`/`[Suggested]` follow the same meaning as in
-`code-review-kit-general.instructions.md`. For all "compare to neighboring/sibling" rules below,
+`code-review-standards.instructions.md`. For all "compare to neighboring/sibling" rules below,
 check the nearest existing page/component of the same kind (search page, detail page, shared
 widget) before flagging — the point is consistency with what's already in the repo, not an
 abstract ideal.
@@ -22,6 +22,10 @@ abstract ideal.
   this is where `_navManager`, `_userContext`, `_appState`, `_appBus`, `_dialogService`, and
   `_snackBarService` come from, and skipping it invites re-injecting those individually or
   reaching around them. (`add-blazor-page` skill)
+- **[Suggested]** Flag non-trivial logic (more than simple parameter passthrough or a one-line
+  computed value) written directly in a `.razor` file's `@code { }` block instead of in a paired
+  `<Name>.razor.cs` code-behind class, when sibling pages in the same area use the code-behind
+  pairing. (`add-blazor-page` skill)
 - **[Required]** Flag a Blazor `[Inject]` property that isn't named `_camelCase` — this repo
   extends its private-field naming convention to injected fields by convention (`.editorconfig`
   only covers `private` fields, so this needs a human/reviewer check). (`add-blazor-page` skill)
@@ -69,14 +73,15 @@ abstract ideal.
 
 ## User-facing behavior and accessibility
 
-These rules are applied by the `code-reviewer` agent's UI section (in play whenever a change
-materially affects UI behavior, layout, interaction, accessibility, or design-system usage) and by
-Copilot Code Review whenever this file's `applyTo` globs match. There is no separate UI-review
-agent; UI review is a conditional part of the code review. The generic rules (loading feedback,
-accessibility, responsive layout, contrast and focus, design-artifact fidelity, component test
-coverage) are in the synced `code-review-kit-blazor` file; this section keeps only the rules that
-name this repository's validation and notification components.
+These rules are applied by the `code-reviewer` agent's "when the diff touches Blazor UI" section —
+in play whenever a change materially affects UI behavior, layout, interaction, accessibility, or
+design-system usage — and by Copilot Code Review whenever this file's `applyTo` globs match.
+There is no separate UI-review agent; UI review is a conditional part of the code review.
 
+- **[Required]** Flag a page/component that performs an async `_appBus` call without visible
+  loading feedback (the `_appState.Working` spinner pattern, or an equivalent already established
+  on comparable pages) — see "State-management consistency" above; this is called out again here
+  because a missing loading state is a user-facing defect, not just a convention slip.
 - **[Required]** Flag a form/page where FluentValidation errors aren't surfaced to the user (no
   `Blazored.FluentValidation` integration or equivalent field-level message) — a validation rule
   that exists but is never shown provides no actual protection to the user.
@@ -84,9 +89,31 @@ name this repository's validation and notification components.
   page that renders nothing rather than an explicit "no results" state) or an error from a failed
   `_appBus` call (silently swallowed instead of a `_snackBarService` notification or equivalent),
   when comparable existing pages do handle these states.
+- **[Required]** Flag a non-decorative `<img>`/icon-only interactive control with no accessible
+  name (missing `alt`, `aria-label`, or MudBlazor's equivalent prop), and a custom interactive
+  element (a `<div>`/`<span>` with a click handler) that isn't keyboard-operable when a native
+  `MudButton`/`<button>` would have worked.
+- **[Suggested]** Flag a new layout that hard-codes a fixed pixel width or otherwise won't reflow
+  at a narrow viewport, when comparable existing pages use MudBlazor's responsive grid/breakpoint
+  props instead.
+- **[Suggested]** Flag custom (non-MudBlazor-default) text/background color combinations that look
+  low-contrast, or a dialog/modal that doesn't return focus sensibly after it closes.
+- **[Suggested]** When the PR description or task links a design artifact (Figma/Zeplin), flag an
+  implementation that visibly diverges from it (spacing, missing state such as hover/disabled) —
+  the reviewer should be given the artifact directly rather than asked to infer it.
 
 ## Component test coverage
 
+- **[Suggested]** Flag a new or meaningfully changed component with non-trivial behavior
+  (conditional rendering branches, an event handler containing logic, a computed display value
+  derived from more than one input) that has no accompanying test under `UnitTests/Web/...`, when
+  comparable existing components in the repo do have either a bUnit test or a plain code-behind
+  logic test. The testing guide accepts either form of coverage for component behavior — this is
+  a coverage-gap flag, not a requirement to specifically add bUnit if the repo's established
+  pattern for similar components is a plain code-behind logic test instead.
+  (docs/04-testing-guide.md — "Functional tests... don't assert on grid contents or exercise
+  button clicks/interactivity — that's for component tests (bUnit) or manual/browser
+  verification"; `add-blazor-page` skill step 8)
 - **[Required]** Flag a `FunctionalTests` test that asserts on grid contents, simulates button
   clicks, or otherwise exercises component interactivity — functional tests in this repo are
   scoped to "does the route resolve and render," asserting only status code plus visible
